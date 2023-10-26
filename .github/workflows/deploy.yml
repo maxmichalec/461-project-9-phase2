@@ -2,16 +2,14 @@ name: Build and Deploy
 
 on:
   workflow_dispatch: {}
-  #push:
-  #  branches: [ main ]
-  #pull_request:
-  #  branches: [ main ]
+  push: {}
+    #branches: [ main ]
+  pull_request: {}
+    #branches: [ main ]
 
 env:
   applicationfolder: package-rater
   AWS_REGION: us-east-2
-  S3BUCKET: ## s3 bucket name ##
-
 
 jobs:
   build:
