@@ -1,29 +1,52 @@
+# This workflow builds and deploys a angular application to an EC2 instance
+
 name: Build and Deploy
 
 on:
-  workflow_dispatch: {}
-  push: {}
-    #branches: [ main ]
-  pull_request: {}
-    #branches: [ main ]
-
-env:
-  applicationfolder: package-rater
-  AWS_REGION: us-east-2
+    push:
+        branches:
+            - main  
+            - 3-github-actions-cicd
 
 jobs:
-  build:
-    name: Build and Package
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v2
-        name: Checkout Repository
+    build:
+        name: Build
+        runs-on: ubuntu-latest
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                node-version: 14
+            
+            # Install npnm package manager dependencies
+            - name: Install dependencies
+              run: ./run install
+
+            # Disable analytics for GitHub Actions
+            - run: ng analytics disable
+            
+            # Build angular application
+            - name: Build application
+              run: ng build
+
+
+    # deploy:
+    #     needs: build
+    #     runs-on: ubuntu-latest
+
+    #     steps:
+    #         - name: Deploy to EC2
+    #           uses: appleboy/ssh-action@master
+    #           with:
+    #             host: ${{ secrets.EC2_HOST }}  # EC2 instance host (use GitHub secrets)
+    #             username: ${{ secrets.EC2_USERNAME }}  # SSH username (use GitHub secrets)
+    #             key: ${{ secrets.EC2_SSH_KEY }}  # SSH private key (use GitHub secrets)
+    #             script: |
+    #               cd ../../package-rater/
+    #               git pull origin main 
+    #               ng serve
 
