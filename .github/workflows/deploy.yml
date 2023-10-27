@@ -24,7 +24,9 @@ jobs:
             
             # Install npnm package manager dependencies
             - name: Install dependencies
-              run: ./run install
+              run: npm install
+
+            - run: ./run install
 
             # Disable analytics for GitHub Actions
             - run: ng analytics disable
