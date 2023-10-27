@@ -27,6 +27,9 @@ jobs:
               run: npm install
 
             - run: ./run install
+            
+            - name: Install Angular CLI
+              run: npm install -g @angular/cli
 
             # Disable analytics for GitHub Actions
             - run: ng analytics disable
