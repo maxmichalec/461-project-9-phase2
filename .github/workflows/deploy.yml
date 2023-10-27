@@ -36,7 +36,7 @@ jobs:
             
             # Build angular application
             - name: Build application
-              run: cd ../../package-rater && ng analytics disable && ng build
+              run: cd package-rater && ng analytics disable && ng build
 
 
     # deploy:
