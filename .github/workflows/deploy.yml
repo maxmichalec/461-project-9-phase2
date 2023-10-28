@@ -39,7 +39,7 @@ jobs:
         run: |
           cd front-end
           export CHROME_BIN=chromium-browser
-          ng test --browsers=ChromiumHeadlessNoSandbox --watch=false
+          ng test --browsers=ChromeHeadless --watch=false
         env:
           CHROME_BIN: /usr/bin/chromium-browser
 
