@@ -32,4 +32,4 @@ jobs:
       - name: Build Angular Application
         run: |
           cd front-end
-          ng build --prod
+          ng build
