@@ -35,8 +35,12 @@ jobs:
           ng analytics disable
           ng build
 
-      - name: Test Angular Application
+      - name: Run Tests
         run: |
           cd front-end
-          ng test --watch=false
+          export CHROME_BIN=chromium-browser
+          ng test --browsers=ChromiumHeadlessNoSandbox --watch=false
+        env:
+          CHROME_BIN: /usr/bin/chromium-browser
+
 
