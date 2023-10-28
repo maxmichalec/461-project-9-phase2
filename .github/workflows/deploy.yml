@@ -1,0 +1,57 @@
+# This workflow builds and deploys a angular application to an EC2 instance
+
+name: Build and Deploy
+
+on:
+    push:
+        branches:
+            - main  
+            - 3-github-actions-cicd
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                node-version: 16.x
+            
+            # Install npnm package manager dependencies
+            - name: Install dependencies
+              run: npm install
+
+            - run: ./run install
+            
+            - name: Install Angular CLI
+              run: npm install -g @angular/cli
+
+            # Disable analytics for GitHub Actions
+            #- run: ng analytics disable
+            
+            # Build angular application
+            - name: Build application
+              run: cd package-rater && ng analytics disable && ng build
+
+
+    # deploy:
+    #     needs: build
+    #     runs-on: ubuntu-latest
+
+    #     steps:
+    #         - name: Deploy to EC2
+    #           uses: appleboy/ssh-action@master
+    #           with:
+    #             host: ${{ secrets.EC2_HOST }}  # EC2 instance host (use GitHub secrets)
+    #             username: ${{ secrets.EC2_USERNAME }}  # SSH username (use GitHub secrets)
+    #             key: ${{ secrets.EC2_SSH_KEY }}  # SSH private key (use GitHub secrets)
+    #             script: |
+    #               cd ../../package-rater/
+    #               git pull origin main 
+    #               ng serve
+
