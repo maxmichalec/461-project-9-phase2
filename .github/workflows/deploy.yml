@@ -32,4 +32,11 @@ jobs:
       - name: Build Angular Application
         run: |
           cd front-end
+          ng analytics disable
           ng build
+
+      - name: Test Angular Application
+        run: |
+          cd front-end
+          ng test --watch=false --browsers=ChromeHeadlessCI
+
