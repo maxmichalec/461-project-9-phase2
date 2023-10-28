@@ -38,5 +38,5 @@ jobs:
       - name: Test Angular Application
         run: |
           cd front-end
-          ng test
+          ng test --watch=false
 
