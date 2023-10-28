@@ -3,6 +3,7 @@
 name: Build and Deploy
 
 on:
+    workflow_dispatch: {}
     push:
         branches:
             - main  
@@ -36,7 +37,7 @@ jobs:
             
             # Build angular application
             - name: Build application
-              run: cd package-rater && ng analytics disable && ng build
+              run: cd front-end && ng analytics disable && ng build
 
 
     # deploy:
