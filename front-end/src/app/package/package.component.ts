@@ -143,7 +143,7 @@ export class PackageComponent {
         console.log('Package update successful:', response);
       },
       error => {
-        this.updateMessage = 'Error updating pacakge';
+        this.updateMessage = 'Error updating package';
         console.log('Error updating package:', error);
       }
     );
