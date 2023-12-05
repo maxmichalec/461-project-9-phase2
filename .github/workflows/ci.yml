@@ -35,6 +35,11 @@ jobs:
       
     - name: Build the Docker image
       run: cd front-end && docker build -t carolinecgilbert6/461-project-9-phase2 .
+
+    - name: Print Docker Image Contents
+      run: |
+            docker run --rm carolinecgilbert6/461-project-9-phase2 ls -R /usr/share/nginx/html
+
       
     - name: Push to Dockerhub
       run: cd front-end && docker push carolinecgilbert6/461-project-9-phase2:latest
