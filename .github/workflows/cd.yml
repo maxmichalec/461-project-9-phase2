@@ -8,17 +8,11 @@ on:
 
 jobs:
 
-  deploy:
+  build:
 
     runs-on: self-hosted
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Print Repository Contents
-        run: ls -R $GITHUB_WORKSPACE
-        
       - name: Check if CI was successful
         id: check_ci
         run: |
