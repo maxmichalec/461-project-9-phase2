@@ -8,13 +8,16 @@ WORKDIR /app/front-end
 RUN npm install -g @angular/cli
 
 # Copy the source code (including your Angular project) into the container
-COPY . .
+# COPY . .
 
 # Run npm install to install project dependencies
 RUN npm install
 
 # Build the Angular app and specify the output directory
-RUN ng build --output-path=/app/dist/front-end
+# RUN ng build --output-path=/app/dist/front-end
+RUN ng build --prod
+
+COPY /dist/front-end /usr/share/nginx/html
 
 # Expose the backend port
 EXPOSE 9000
