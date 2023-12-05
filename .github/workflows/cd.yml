@@ -8,11 +8,17 @@ on:
 
 jobs:
 
-  build:
+  deploy:
 
     runs-on: self-hosted
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Print Repository Contents
+        run: ls -R $GITHUB_WORKSPACE
+        
       - name: Check if CI was successful
         id: check_ci
         run: |
@@ -30,4 +36,3 @@ jobs:
 
       - name: Run Docker Container
         run: sudo docker run -d -p 9000:9000 --name 461-project-9-phase2-container carolinecgilbert6/461-project-9-phase2
-      
