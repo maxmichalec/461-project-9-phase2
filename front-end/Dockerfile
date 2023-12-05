@@ -14,7 +14,12 @@ COPY . .
 RUN npm install
 
 # Build the Angular app and specify the output directory
-RUN ng build --output-path=/app/dist
+# RUN ng build --output-path=/app/dist
+RUN npm run build --prod
+
+FROM nginx:alpine
+
+COPY --from=builder /app/front-end/dist /usr/share/nginx/html
 
 # Expose the backend port
 EXPOSE 80
