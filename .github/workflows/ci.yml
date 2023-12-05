@@ -18,6 +18,9 @@ jobs:
     
     - name: Build the Application
       run: npm run build
+
+    - name: Print Repository Contents
+      run: ls -R $GITHUB_WORKSPACE
     
     - name: Test the Application
       run: echo "Add testing for the application"
