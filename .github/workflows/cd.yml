@@ -14,10 +14,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Print Repository Contents
-        run: ls -R $GITHUB_WORKSPACE
+        uses: actions/checkout@v3
         
       - name: Check if CI was successful
         id: check_ci
@@ -30,6 +27,9 @@ jobs:
           fi
       - name: Pull Docker image
         run: sudo docker pull carolinecgilbert6/461-project-9-phase2:latest
+
+      - name: Print Image Contents
+        run: docker run --rm carolinecgilbert6/461-project-9-phase2 ls -R /usr/share/nginx/html
 
       - name: Delete Old Docker Container
         run: sudo docker rm -f 461-project-9-phase2-container || true
