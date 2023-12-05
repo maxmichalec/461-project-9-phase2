@@ -19,7 +19,7 @@ RUN npm run build --prod
 FROM nginx:alpine
 
 # Copy build artifacts from the builder stage
-COPY --from=builder /app/front-end/dist /usr/share/nginx/html
+COPY --from=builder /app/front-end/dist/front-end /usr/share/nginx/html
 
 # Expose the backend port
 EXPOSE 80
