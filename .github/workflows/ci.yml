@@ -34,6 +34,7 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
+        cd front-end
         docker build -t carolinecgilbert6/461-project-9-phase2 .
         docker push carolinecgilbert6/461-project-9-phase2:latest
 
