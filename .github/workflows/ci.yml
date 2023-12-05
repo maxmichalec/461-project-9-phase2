@@ -13,10 +13,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Dependencies & Build
+    - name: Install Dependencies
       run: |
             npm install
-            npm run build --prod
+            cd front-end && npm install
+
+    - name: Build Application
+      run: npm run build --prod
 
     - name: Print Repository Contents
       run: ls -R $GITHUB_WORKSPACE
