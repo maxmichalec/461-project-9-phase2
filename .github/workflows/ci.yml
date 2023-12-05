@@ -13,8 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Install Dependencies
+      run: npm install && cd front-end && npm install
+    
     - name: Build the Application
-      run: npm install && npm run build
+      run: npm run build
     
     - name: Test the Application
       run: echo "Add testing for the application"
