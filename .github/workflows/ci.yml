@@ -32,9 +32,7 @@ jobs:
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       
     - name: Build the Docker image
-      # run: cd front-end && docker build -t carolinecgilbert6/461-project-9-phase2 .
-      run: docker build -t carolinecgilbert6/461-project-9-phase2 .
+      run: cd front-end && docker build -t carolinecgilbert6/461-project-9-phase2 .
       
     - name: Push to Dockerhub
-      # run: cd front-end && docker push carolinecgilbert6/461-project-9-phase2:latest
-      run: docker push carolinecgilbert6/461-project-9-phase2:latest
+      run: cd front-end && docker push carolinecgilbert6/461-project-9-phase2:latest
