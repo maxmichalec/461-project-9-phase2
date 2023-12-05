@@ -14,7 +14,7 @@ COPY . .
 RUN npm install
 
 # Build the Angular app and specify the output directory
-RUN ng build --output-path=/app/dist
+RUN ng build --output-path=/app/dist/front-end
 
 # Expose the backend port
 EXPOSE 9000
