@@ -1,6 +1,7 @@
-# Stage 1: Build the Angular app
-FROM node:18 AS builder
+# Use an official Node.js runtime as a parent image
+FROM node:18
 
+# Set the working directory to your Angular project directory
 WORKDIR /app/front-end
 
 # Install Angular CLI globally (if not already installed)
@@ -13,17 +14,10 @@ COPY . .
 RUN npm install
 
 # Build the Angular app and specify the output directory
-RUN npm run build --prod
-
-# Stage 2: Create a smaller image with only the necessary artifacts
-FROM nginx:alpine
-
-# Copy build artifacts from the builder stage
-COPY --from=builder /app/front-end/dist/front-end /usr/share/nginx/html
+RUN ng build --output-path=/app/dist
 
 # Expose the backend port
-EXPOSE 80
+EXPOSE 9000
 
 # Define the command to serve your app
-CMD ["nginx", "-g", "daemon off;"]
-
+CMD ["ng", "serve", "--host", "0.0.0.0"]
