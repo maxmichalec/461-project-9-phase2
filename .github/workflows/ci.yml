@@ -5,25 +5,24 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
     - name: Install Dependencies
       run: |
-            npm install
-            cd front-end && npm install
+        npm install
+        cd front-end && npm install
 
     - name: Build Application
       run: npm run build --prod
 
     - name: Print Repository Contents
       run: ls -R $GITHUB_WORKSPACE
-    
+
     - name: Test the Application
       run: echo "Add testing for the application"
 
@@ -32,14 +31,12 @@ jobs:
         DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      
-    - name: Build the Docker image
-      run: cd front-end && docker build -t carolinecgilbert6/461-project-9-phase2 .
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t carolinecgilbert6/461-project-9-phase2 .
+        docker push carolinecgilbert6/461-project-9-phase2:latest
 
     - name: Print Docker Image Contents
-      run: |
-            docker run --rm carolinecgilbert6/461-project-9-phase2 ls -R /usr/share/nginx/html
+      run: docker run carolinecgilbert6/461-project-9-phase2:latest ls -R /usr/share/nginx/html
 
-      
-    - name: Push to Dockerhub
-      run: cd front-end && docker push carolinecgilbert6/461-project-9-phase2:latest
