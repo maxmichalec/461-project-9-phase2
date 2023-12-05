@@ -17,7 +17,7 @@ jobs:
       run: npm install && cd front-end && npm install
     
     - name: Build the Application
-      run: npm run build
+      run: npm run build && cd front-end && npm run build
 
     - name: Print Repository Contents
       run: ls -R $GITHUB_WORKSPACE
