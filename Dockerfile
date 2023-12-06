@@ -11,8 +11,11 @@ COPY . .
 
 RUN npm install
 
+RUN export LOG_FILE=log.txt
+RUN export LOG_LEVEL=2
+
 RUN npm run build
 
 EXPOSE 9000
 
-CMD [ "node", "dist/app.js" ]
+CMD [ "node", "dist/app.js", ">>", "console_log.txt" ]
