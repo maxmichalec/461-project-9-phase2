@@ -3,7 +3,6 @@ name: CD-FIX
 on:
   workflow_run:
     workflows: ["CI-FIX"]
-    branches: [main, 28-fix-cicd]
     types:
       - completed
 
