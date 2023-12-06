@@ -6,7 +6,10 @@ on:
     types:
       - completed
   workflow_dispatch:
-
+  push:
+    branches:
+      - main
+      - 28-fix-cicd
 
 
 jobs:
