@@ -1,0 +1,56 @@
+name: API-CICD
+
+on:
+  push:
+    branches:
+      - main
+      - backend-ci-cd
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: |
+          npm install
+
+      - name: Build Back-end Application
+        run: |
+          npm run build
+
+      - name: Test Back-end Application
+        run: |
+          echo "add tests here"
+
+      - name: Archive Artifact
+        uses: actions/upload-artifact@v3
+        with:
+            name: backend-dist-artifact
+            path: dist
+
+  
+  deploy:
+    needs: build
+    runs-on: [self-hosted, back-end]
+    
+    steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+
+        - name: Download Artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: backend-dist-artifact
+            path: dist
+        
+        - name: Print Repository Contents
+          run: ls -R $GITHUB_WORKSPACE
