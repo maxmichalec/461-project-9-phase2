@@ -22,7 +22,7 @@ jobs:
       - name: Print Contents of Directory
         run: |
           # Navigate to the directory you want to inspect
-          cd /path/to/your/directory
+          cd ~
 
           # Print the contents of the directory
           ls -al
