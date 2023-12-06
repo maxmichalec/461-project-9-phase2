@@ -20,12 +20,14 @@ jobs:
         uses: actions/checkout@v3
       
       - name: Copy Files to EC2
-        run: |                    
-          EC2_DEST_DIR="/github"
-          EC2_HOST="ec2-3-89-139-14.compute-1.amazonaws.com"
-          EC2_USER="ec2-user"
-          
-          scp -i ${{ secrets.EC2_SSH_KEY }} -r $REPO_SOURCE_DIR $EC2_USER@$EC2_HOST:$EC2_DEST_DIR
+        env:
+            REPO_SOURCE_DIR: $GITHUB_WORKSPACE
+            EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+            EC2_USER: ec2-user
+            EC2_HOST: ec2-3-89-139-14.compute-1.amazonaws.com
+            REPO_DEST_DIR: /home/ec2-user/github
+        run: |                              
+          scp -i $EC2_SSH_KEY -r $REPO_SOURCE_DIR $EC2_USER@$EC2_HOST:$REPO_DEST_DIR
 
       
       - name: Print Contents of Directory
