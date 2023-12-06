@@ -6,10 +6,7 @@ on:
     types:
       - completed
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - 28-fix-cicd
+
 
 
 jobs:
@@ -21,11 +18,7 @@ jobs:
 
       - name: Print Contents of Directory
         run: |
-          # Navigate to the directory you want to inspect
-          cd ~
-
-          # Print the contents of the directory
-          ls -al
+          ls -R $GITHUB_WORKSPACE
 
       - name: Check if CI was successful
         id: check_ci
