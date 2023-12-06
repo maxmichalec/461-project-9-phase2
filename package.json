@@ -12,6 +12,7 @@
 	"author": "Luke Chigges, Avigdor Roytman, Jungwoo Kwon, Faaiz Memon",
 	"license": "",
 	"devDependencies": {
+		"@angular-eslint/eslint-plugin": "^17.1.1",
 		"@types/jasmine": "^5.1.4",
 		"@types/jest": "^29.5.4",
 		"@types/node": "^20.6.2",
