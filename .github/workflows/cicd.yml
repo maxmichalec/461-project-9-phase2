@@ -47,7 +47,7 @@ jobs:
     
     steps:
         - name: Checkout Repository
-          uses: actions/checkout@v3
+          run: sudo -E actions/checkout@v3
 
         - name: Download Artifact
           uses: actions/download-artifact@v3
