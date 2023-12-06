@@ -18,7 +18,19 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
+      
+      - name: Clone Repository
+        run: |
+          # Set the repository URL
+          REPO_URL="https://github.com/maxmichalec/461-project-9-phase2/"
+          
+          # Set the destination directory (change to your desired path)
+          mkdir github
+          DEST_DIR="/github/"
+          
+          # Clone the repository
+          git clone $REPO_URL $DEST_DIR
+      
       - name: Print Contents of Directory
         run: |
           ls -R $GITHUB_WORKSPACE
