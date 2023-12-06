@@ -1,0 +1,22 @@
+name: CD-FIX
+
+on:
+  workflow_run:
+    workflows: ["CI-FIX"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Print Contents of Directory
+        run: |
+          # Navigate to the directory you want to inspect
+          cd /path/to/your/directory
+
+          # Print the contents of the directory
+          ls -al
