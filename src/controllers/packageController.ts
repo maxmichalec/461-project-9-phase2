@@ -3,12 +3,13 @@ import { Package, AuthenticationToken, PackageId, PackageName, PackageData, Pack
 import { log } from '../logger';
 import { PutItemCommand, GetItemCommand, PutItemCommandInput, DeleteItemCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { generatePackageId, metricCalcFromUrl, PackageInfo, dbclient, s3client, defaultUser } from './controllerHelpers';
+import { generatePackageId, metricCalcFromUrl, PackageInfo, dbclient, s3client, defaultUser, log_request } from './controllerHelpers';
 import AdmZip = require("adm-zip");
 
 // Controller function for handling the GET request to /package/{id}
 export async function getPackageById (req: Request, res: Response) {
   try {
+    log_request(req);
     const packageId: PackageId = req.params.id; // Extract the package ID from the URL
     let packageName = "";
     let packageVersion = "";
@@ -140,6 +141,7 @@ export async function getPackageById (req: Request, res: Response) {
 // Controller function for handling the PUT request to update a package by ID
 export async function updatePackage(req: Request, res: Response) {
   try {
+    log_request(req);
     const packageId: PackageId = req.body.metadata.ID; // Extract the package ID from the URL
     const packageName: PackageName = req.body.metadata.Name;
     const packageVersion = req.body.metadata.Version;
@@ -346,6 +348,7 @@ export async function updatePackage(req: Request, res: Response) {
 // Controller function for handling the DELETE request to /package/:id
 export async function deletePackage(req: Request, res: Response) {
   try {
+    log_request(req);
     const packageId: PackageId = req.params.id; // Extract the package ID from the URL
 
     // Verify the X-Authorization header for authentication and permission
@@ -403,6 +406,7 @@ export async function deletePackage(req: Request, res: Response) {
 // Controller function for handling the POST request to /package
 export async function createPackage(req: Request, res: Response) {
   try {
+    log_request(req);
     // Extract the package data from the request body
     const packageData: PackageData = req.body as PackageData;
 

@@ -5,12 +5,13 @@
  */
 import { Request, Response } from 'express';
 import { AuthenticationToken, PackageMetadata, PackageRegEx } from '../types';
-import { dbclient } from './controllerHelpers';
+import { dbclient, log_request } from './controllerHelpers';
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 export const postPackageByRegEx = async (req: Request, res: Response) => {
   try {
+    log_request(req);
     console.log('Handling /package/byRegEx request');
 
     // Verify the X-Authorization header for authentication and permission

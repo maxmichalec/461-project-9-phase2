@@ -8,12 +8,14 @@ import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { Request, Response } from 'express';
 import { PackageQuery, EnumerateOffset, PackageMetadata, AuthenticationToken } from '../types'; // Adjust the path as needed
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import { log_request } from './controllerHelpers';
 
 const dynamoDb = new DynamoDBClient({ region: "us-east-1" });
 
 // Controller function for handling the POST request to /packages
 export const getPackages = async (req: Request, res: Response) => {
   try {
+    log_request(req);
     console.log('POST /packages endpoint');
 
     // Validate request body

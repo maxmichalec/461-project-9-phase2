@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { PackageRating, AuthenticationToken, PackageId, PackageHistoryEntry, PackageMetadata, PackageName } from '../types'; // Adjust the path as needed
 import { log } from '../logger';
-import { metricCalcFromUrl, PackageInfo, dbclient, timeout, defaultUser } from './controllerHelpers';
+import { metricCalcFromUrl, PackageInfo, dbclient, timeout, defaultUser, log_request } from './controllerHelpers';
 import { GetItemCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 
 // Controller function for handling the GET request to /package/{id}/rate
 export async function getPackageRating(req: Request, res: Response) {
   try {
+    log_request(req);
     const packageId: PackageId = req.params.id; // Extract the package ID from the URL
     let packageName: PackageName = "";
     let packageVersion: string = "";

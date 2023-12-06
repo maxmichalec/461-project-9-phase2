@@ -8,6 +8,7 @@ import { Request, Response } from 'express';
 import { AuthenticationToken } from '../types';
 import { DynamoDBClient, DeleteItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { S3Client, ListObjectsCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { log_request } from './controllerHelpers';
 
 const dynamoDb = new DynamoDBClient({ region: 'us-east-1' });
 const s3 = new S3Client({ region: 'us-east-1' });
@@ -15,6 +16,7 @@ const s3 = new S3Client({ region: 'us-east-1' });
 // Controller function for handling the DELETE request to /reset
 export const resetRegistry = async (req: Request, res: Response) => {
   try {
+    log_request(req);
     console.log('Handling /reset request');
 
     // Verify the X-Authorization header for authentication and permission

@@ -1,10 +1,11 @@
-import { PackageId, User } from '../types';
+import { PackageId, User, PackageData } from '../types';
 import { log } from '../logger';
 import { v5 as uuidv5 } from 'uuid';
 import URLParser from '../URLParser';
 import { BusFactor, Responsiveness, Correctness, License, RampUp, PullRequests, DependencyPins } from "../metrics";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { S3Client } from "@aws-sdk/client-s3";
+import { Request } from 'express';
 
 export const dbclient = new DynamoDBClient({ region: "us-east-1" });
 export const s3client = new S3Client({ region: "us-east-1" });
@@ -101,4 +102,10 @@ export async function metricCalcFromUrl(url: string): Promise<PackageInfo | null
 
 export function timeout(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export const log_request = (req: Request) => {
+	const packageData: PackageData = req.body as PackageData;
+	const packageContentSet = (packageData?.Content !== undefined) && (packageData?.Content !== '');
+	log.info(`Request:\n{\n\tmethod: ${req.method},\n\turl: ${req.url},\n\tauth header: ${req.headers['x-authorization']},\n\tparams: ${JSON.stringify(req.params)}\n\t?body.content: ${packageContentSet},\n\tbody.url: ${packageData?.URL},\n}`);
 }

@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
 import { AuthenticationToken, PackageHistoryEntry, PackageName } from '../types'; 
 import { log } from '../logger';
-import { dbclient, s3client } from './controllerHelpers';
+import { dbclient, s3client, log_request } from './controllerHelpers';
 import { ScanCommand, DeleteItemCommand, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 // Controller function for handling the GET request to /package/byName/{name}
 export async function getPackageHistoryByName(req: Request, res: Response) {
   try {
+    log_request(req);
     // Verify the X-Authorization header for authentication and permission
     const authorizationHeader: AuthenticationToken | undefined = Array.isArray(req.headers['x-authorization'])
       ? req.headers['x-authorization'][0] // Use the first element if it's an array
@@ -73,6 +74,7 @@ export async function getPackageHistoryByName(req: Request, res: Response) {
 // Controller function for handling the DELETE request to /package/byName/{name}
 export async function deletePackageByName(req: Request, res: Response) {
   try {
+    log_request(req);
     // Verify the X-Authorization header for authentication and permission
     const authorizationHeader: AuthenticationToken | undefined = Array.isArray(req.headers['x-authorization'])
       ? req.headers['x-authorization'][0] // Use the first element if it's an array
