@@ -2,7 +2,7 @@ name: CD-FIX
 
 on:
   workflow_run:
-    workflows: ["CI-FIX"]
+    workflows: [CI-FIX]
     types:
       - completed
 
