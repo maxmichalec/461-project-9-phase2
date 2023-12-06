@@ -3,6 +3,7 @@ name: CD-FIX
 on:
   workflow_run:
     workflows: ["CI-FIX"]
+    branches: [main, 28-fix-cicd]
     types:
       - completed
 
@@ -20,3 +21,13 @@ jobs:
 
           # Print the contents of the directory
           ls -al
+
+      - name: Check if CI was successful
+        id: check_ci
+        run: |
+            if [ ${{ github.event.workflow_run.conclusion }} == "success" ]; then
+              echo "CI was successful"
+            else
+              echo "CI was not successful"
+              exit 1
+            fi
