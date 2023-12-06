@@ -15,7 +15,7 @@ export class BaseService {
   ) {
   }
 
-  private _rootUrl?: string = 'http://localhost:9000';  //edit the URL of the apis 
+  private _rootUrl?: string = 'http://ec2-34-228-37-205.compute-1.amazonaws.com:9000';  //edit the URL of the apis 
 
   /**
    * Returns the root url for all operations in this service. If not set directly in this
