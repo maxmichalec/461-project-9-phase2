@@ -1,0 +1,38 @@
+name: API-CD
+
+on:
+  workflow_run:
+    workflows: ["API-CI"]
+    types:
+      - completed
+
+jobs:
+
+  deploy:
+
+    runs-on: [self-hosted, back-end]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Print Repository Contents
+        run: ls -R $GITHUB_WORKSPACE
+        
+      - name: Check if CI was successful
+        id: check_ci
+        run: |
+          if [ ${{ github.event.workflow_run.conclusion }} == "success" ]; then
+            echo "CI was successful"
+          else
+            echo "CI was not successful"
+            exit 1
+          fi
+      - name: Pull Docker image
+        run: sudo docker pull carolinecgilbert6/461-project-9-phase2-api:latest
+
+      - name: Delete Old Docker Container
+        run: sudo docker rm -f 461-project-9-phase2-api-container || true
+
+      - name: Run Docker Container
+        run: sudo docker run -d -p 9000:9000 --name 461-project-9-phase2-api-container carolinecgilbert6/461-project-9-phase2-api
