@@ -2,6 +2,9 @@ FROM node:18
 
 WORKDIR /app
 
+# Install Angular CLI globally (if not already installed)
+RUN npm install -g @angular/cli
+
 COPY package*.json ./
 
 COPY . .
