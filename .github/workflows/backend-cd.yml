@@ -19,13 +19,13 @@ jobs:
       - name: Print Repository Contents
         run: ls -R $GITHUB_WORKSPACE
         
-      - name: Check if CI was successful
-        id: check_ci
+      - name: Check if API-CI was successful
+        id: check_api_ci
         run: |
           if [ ${{ github.event.workflow_run.conclusion }} == "success" ]; then
-            echo "CI was successful"
+            echo "API-CI was successful"
           else
-            echo "CI was not successful"
+            echo "API-CI was not successful"
             exit 1
           fi
       - name: Pull Docker image
