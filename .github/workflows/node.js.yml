@@ -6,7 +6,7 @@ name: Node.js CI
 on:
     workflow_dispatch: {}
     push:
-        branches: ["main", "30-fix-workflows"]
+        branches: ["main"]
     pull_request:
         branches: ["main"]
 

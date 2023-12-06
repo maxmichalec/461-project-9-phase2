@@ -5,7 +5,6 @@ on:
     push:
         branches:
             - main
-            - 30-fix-workflows
     pull_request:
         branches:
             - main
