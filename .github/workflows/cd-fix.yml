@@ -20,16 +20,11 @@ jobs:
         uses: actions/checkout@v3
       
       - name: Copy Files to EC2
-        run: |          
-          
-          # Set the destination directory on your EC2 instance
+        run: |                    
           EC2_DEST_DIR="/github"
-          
-          # Set the EC2 host, user, and SSH key
           EC2_HOST="ec2-3-89-139-14.compute-1.amazonaws.com"
           EC2_USER="ec2-user"
           
-          # Use scp to copy files to EC2
           scp -i ${{ secrets.EC2_SSH_KEY }} -r $REPO_SOURCE_DIR $EC2_USER@$EC2_HOST:$EC2_DEST_DIR
 
       
