@@ -55,8 +55,6 @@ jobs:
             name: frontend-dist-artifact
             path: dist
         
-        - name: Print Contents of Deployed Directory
-          run: |
-              cd dist
-              ls -al
+        - name: Print Repository Contents
+          run: ls -R $GITHUB_WORKSPACE
   
