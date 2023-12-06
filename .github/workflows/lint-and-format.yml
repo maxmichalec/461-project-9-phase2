@@ -35,7 +35,7 @@ jobs:
 
             # Install dependencies
             - name: Install Dependencies
-              run: npm install
+              run: npm install && cd front-end && npm install && cd ..
 
             # Run ESLint
             - name: Run ESLint
