@@ -19,17 +19,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
       
-      - name: Clone Repository
-        run: |
-          # Set the repository URL
-          REPO_URL="https://github.com/maxmichalec/461-project-9-phase2/"
+      - name: Copy Files to EC2
+        run: |          
           
-          # Set the destination directory (change to your desired path)
-          mkdir github
-          DEST_DIR="/github/"
+          # Set the destination directory on your EC2 instance
+          EC2_DEST_DIR="/github"
           
-          # Clone the repository
-          git clone $REPO_URL $DEST_DIR
+          # Set the EC2 host, user, and SSH key
+          EC2_HOST="ec2-3-89-139-14.compute-1.amazonaws.com"
+          EC2_USER="ec2-user"
+          
+          # Use scp to copy files to EC2
+          scp -i ${{ secrets.EC2_SSH_KEY }} -r $REPO_SOURCE_DIR $EC2_USER@$EC2_HOST:$EC2_DEST_DIR
+
       
       - name: Print Contents of Directory
         run: |
