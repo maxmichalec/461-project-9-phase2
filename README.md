@@ -1,4 +1,14 @@
-# A CLI for trustworthy module reuse
+# A CLI for Trustworthy Module Reuse
+
+## Description
+
+This project is a full-stack web application designed to provide a robust interface for package management and analysis. It features a front-end built with Angular, providing a user-friendly interface, and a back-end powered by Node.js for efficient data handling and API integration.
+
+## Dependencies
+
+- Node.js
+- Angular
+- Docker (optional for deployment)
 
 ## Usage
 
@@ -16,6 +26,11 @@ cd team-10-project
 # Run test suite
 ./run test
 ```
+
+## Deployment:
+
+The project includes Docker configurations for containerizing the front-end.
+GitHub Actions workflows are set up for CI/CD.
 
 ## Considerations
 
@@ -39,6 +54,16 @@ The selenium test suite logger is the [selenium-test.log](./selenium-test.log) f
 To run the selenium testing framework, run `./selenium-test.sh` from the [root](./) directory. This will install the necessary dependencies, compile the TypeScript code, setup the selenium logger, and run the selenium test suite.
 
 - You must have an `IAM AUTHENTICATION TOKEN` for the tests to access the AWS DB hosting the packages in the registry. If you do not have a token, the test suite is still able to execute but expect most tests to fail.
+
+## Automated Testing
+
+Back-end: Run unit tests for the back-end:
+cd src
+npm test
+
+Front-end: 
+cd front-end
+npm run test:selenium
 
 
 ## Contributors
