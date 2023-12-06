@@ -46,6 +46,10 @@ jobs:
     runs-on: self-hosted
     
     steps:
+        - name: Check Runner Permissions
+          run: |
+            sudo chown -R ec2-user:ec2-user /home/ec2-user/actions-runner/_work
+
         - name: Checkout Repository
           uses: actions/checkout@v3
 
