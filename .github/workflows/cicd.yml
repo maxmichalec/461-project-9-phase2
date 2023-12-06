@@ -46,6 +46,12 @@ jobs:
     runs-on: self-hosted
     
     steps:
+
+        - name: Check Permissions
+          run: |
+            sudo -E whoami
+            umask
+            
         - name: Checkout Repository
           run: sudo -E actions/checkout@v3
 
