@@ -16,10 +16,14 @@ export const getPackages = async (req: Request, res: Response) => {
   try {
     console.log('POST /packages endpoint');
 
+    if(!Array.isArray(req.body)) {
+      return res.status(400).json({ error: 'PackageQuery array must be an array.' });
+    }
+    
     // Validate request body
     const packageQueries: PackageQuery[] = req.body;
 
-    if (!packageQueries || packageQueries.length === 0) {
+    if (!packageQueries || packageQueries.length === 0 || !Array.isArray(packageQueries)) {
       return res.status(400).json({ error: 'PackageQuery array must not be empty.' });
     }
 
