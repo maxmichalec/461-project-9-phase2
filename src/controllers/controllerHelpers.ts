@@ -106,6 +106,10 @@ export function timeout(ms: number) {
 
 export const log_request = (req: Request) => {
 	const packageData: PackageData = req.body as PackageData;
-	const packageContentSet = (packageData?.Content !== undefined) && (packageData?.Content !== '');
+	const packageContentSet = (packageData?.Content !== undefined) || (packageData?.Content !== null);
 	log.info(`Request:\n{\n\tmethod: ${req.method},\n\turl: ${req.url},\n\tauth header: ${req.headers['x-authorization']},\n\tparams: ${JSON.stringify(req.params)}\n\t?body.content: ${packageContentSet},\n\tbody.url: ${packageData?.URL},\n}`);
+}
+
+export const log_response = (code: number, res: string) => {
+	log.info(`Response:\n{\n\tstatus code: ${code},\n\tresponse: ${res}\n}`);
 }

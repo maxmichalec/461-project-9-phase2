@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { PackageRating, AuthenticationToken, PackageId, PackageHistoryEntry, PackageMetadata, PackageName } from '../types'; // Adjust the path as needed
 import { log } from '../logger';
-import { metricCalcFromUrl, PackageInfo, dbclient, timeout, defaultUser, log_request } from './controllerHelpers';
+import { metricCalcFromUrl, PackageInfo, dbclient, timeout, defaultUser, log_request, log_response } from './controllerHelpers';
 import { GetItemCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 
 // Controller function for handling the GET request to /package/{id}/rate
@@ -18,6 +18,7 @@ export async function getPackageRating(req: Request, res: Response) {
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
     if (!authorizationHeader) {
+      log_response(400, "{ error: 'Authentication token missing or invalid' }");
       return res.status(400).json({ error: 'Authentication token missing or invalid' });
     }
 
@@ -46,6 +47,7 @@ export async function getPackageRating(req: Request, res: Response) {
       });
 
     if (packageURL === "") {
+      log_response(404, "{ error: 'Package not found' }");
       return res.status(404).json({ error: 'Package not found' });
     }
 
@@ -55,8 +57,10 @@ export async function getPackageRating(req: Request, res: Response) {
     const infoPromise = metricCalcFromUrl(packageURL);
     const result = await Promise.race([timeoutPromise, infoPromise]);
     if (result === undefined) {
+      log_response(500, "{ error: 'The package rating system choked on at least one of the metrics' }");
       return res.status(500).json({ error: 'The package rating system choked on at least one of the metrics' });
     } else if (result === null) {
+      log_response(500, "{ error: 'The package rating system failed to rate the package' }");
       return res.status(500).json({ error: 'The package rating system failed to rate the package' });
     }
     const info = result as PackageInfo;
@@ -111,6 +115,7 @@ export async function getPackageRating(req: Request, res: Response) {
       "PullRequest": info.PULL_REQUESTS_SCORE,
       "NetScore": info.NET_SCORE,
     };
+    log_response(200, JSON.stringify(packageRating));
     res.status(200).json(packageRating);
   } catch (error) {
     console.error('Error handling /package/{id}/rate:', error);

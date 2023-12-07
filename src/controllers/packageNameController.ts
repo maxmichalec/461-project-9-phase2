@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthenticationToken, PackageHistoryEntry, PackageName } from '../types'; 
 import { log } from '../logger';
-import { dbclient, s3client, log_request } from './controllerHelpers';
+import { dbclient, s3client, log_request, log_response } from './controllerHelpers';
 import { ScanCommand, DeleteItemCommand, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
@@ -15,6 +15,7 @@ export async function getPackageHistoryByName(req: Request, res: Response) {
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
     if (!authorizationHeader) {
+      log_response(400, 'Authentication token missing or invalid');
       return res.status(400).json({ error: 'Authentication token missing or invalid' });
     }
 
@@ -23,6 +24,7 @@ export async function getPackageHistoryByName(req: Request, res: Response) {
     // Retrieve the package history entries based on the provided package name
     const packageName: PackageName = req.params?.name;
     if (!packageName) {
+      log_response(400, 'Package name missing or invalid');
       return res.status(400).json({ error: 'Package name missing or invalid' });
     }
     // Fetch entry from packageHistory DB table
@@ -60,10 +62,12 @@ export async function getPackageHistoryByName(req: Request, res: Response) {
       });
 
     if (packageHistory.length === 0) {
+      log_response(404, 'Package not found');
       return res.status(404).json({ error: 'Package not found' });
     }
 
     // Respond with the package history entries
+    log_response(200, JSON.stringify(packageHistory));
     res.status(200).json(packageHistory);
   } catch (error) {
     console.error('Error handling /package/byName/{name}:', error);
@@ -81,6 +85,7 @@ export async function deletePackageByName(req: Request, res: Response) {
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
     if (!authorizationHeader) {
+      log_response(400, 'Authentication token missing or invalid');
       return res.status(400).json({ error: 'Authentication token missing or invalid' });
     }
 
@@ -130,6 +135,7 @@ export async function deletePackageByName(req: Request, res: Response) {
       await Promise.all(dbdeletePromises);
       await Promise.all(s3deletePromises);
     } else {
+      log_response(404, 'Package not found');
       return res.status(404).json({ error: 'Package not found' });
     }
 
@@ -149,6 +155,7 @@ export async function deletePackageByName(req: Request, res: Response) {
       });
 
     // Respond with a success message
+    log_response(200, 'Package is deleted');
     res.status(200).json({ message: 'Package is deleted' });
   } catch (error) {
     console.error('Error handling /package/byName/{name}:', error);

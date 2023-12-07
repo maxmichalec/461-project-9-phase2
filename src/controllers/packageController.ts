@@ -3,7 +3,7 @@ import { Package, AuthenticationToken, PackageId, PackageName, PackageData, Pack
 import { log } from '../logger';
 import { PutItemCommand, GetItemCommand, PutItemCommandInput, DeleteItemCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { generatePackageId, metricCalcFromUrl, PackageInfo, dbclient, s3client, defaultUser, log_request } from './controllerHelpers';
+import { generatePackageId, metricCalcFromUrl, PackageInfo, dbclient, s3client, defaultUser, log_request, log_response } from './controllerHelpers';
 import AdmZip = require("adm-zip");
 
 // Controller function for handling the GET request to /package/{id}
@@ -20,6 +20,7 @@ export async function getPackageById (req: Request, res: Response) {
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
     if (!authorizationHeader) {
+      log_response(400, "{ error: 'Authentication token missing or invalid' }");
       return res.status(400).json({ error: 'Authentication token missing or invalid' });
     }
 
@@ -27,6 +28,7 @@ export async function getPackageById (req: Request, res: Response) {
 
     // Check if id is defined
     if (!packageId) {
+      log_response(400, "{ error: 'Missing package ID' }");
       return res.status(400).json({ error: 'Missing package ID' });
     }
 
@@ -65,6 +67,7 @@ export async function getPackageById (req: Request, res: Response) {
       });
 
     if (!package1) {
+      log_response(404, "{ error: 'Package not found' }");
       return res.status(404).json({ error: 'Package not found' });
     }
 
@@ -88,6 +91,7 @@ export async function getPackageById (req: Request, res: Response) {
       });
     
     if (content == null) {
+      log_response(404, "{ error: 'Package content not found' }");
       return res.status(404).json({ error: 'Package content not found' });
     }
 
@@ -131,6 +135,7 @@ export async function getPackageById (req: Request, res: Response) {
       });
 
     // Respond with the retrieved package
+    log_response(200, JSON.stringify(package1));
     res.status(200).json(package1);
   } catch (error) {
     log.error('Error handling GET /package/{id}:', error);
@@ -153,16 +158,19 @@ export async function updatePackage(req: Request, res: Response) {
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
     if (!authorizationHeader) {
+      log_response(400, "{ error: 'Authentication token missing or invalid' }");
       return res.status(400).json({ error: 'Authentication token missing or invalid' });
     }
 
     // Check if id, name, and version are defined
     if (!packageId || !packageName || !packageVersion) {
+      log_response(400, "{ error: 'Missing package ID, name, or version' }");
       return res.status(400).json({ error: 'Missing package ID, name, or version' });
     }
 
     // Check if name and version match id
     if (generatePackageId(packageName, packageVersion) !== packageId) {
+      log_response(400, "{ error: 'Package name and version do not match package ID' }");
       return res.status(400).json({ error: 'Package name and version do not match package ID' });
     }
 
@@ -192,13 +200,16 @@ export async function updatePackage(req: Request, res: Response) {
         throw(error);
       });
     if (!exists) {
+      log_response(404, "{ error: 'Package does not already exist' }");
       return res.status(404).json({ error: 'Package does not already exist' });
     }
 
     // Update the package data in S3 bucket + database metadata
     // Verify that only one of Content or URL is set and then update package info if valid
     let info: PackageInfo | null;
-    if (!((updatedPackageData.Content == '') !== (updatedPackageData.URL == ''))) {
+    // if (!((updatedPackageData.Content == '') !== (updatedPackageData.URL == ''))) {
+    if ((updatedPackageData.Content && updatedPackageData.URL) || (!(updatedPackageData.Content) && !(updatedPackageData.URL))) {
+      log_response(400, "{ error: 'Invalid package update request: Bad set of Content and URL' }");
       return res.status(400).json({ error: 'Invalid package update request: Bad set of Content and URL' });
     } else if (updatedPackageData?.Content) {
       log.info("updatePackage request via zip upload");
@@ -216,6 +227,7 @@ export async function updatePackage(req: Request, res: Response) {
         }
       });
       if (packageJson == null) {
+        log_response(400, "{ error: 'Invalid package update request: No package.json found in zip' }");
         return res.status(400).json({ error: 'Invalid package update request: No package.json found in zip' });
       } else {
         packageJsonContent = JSON.parse(packageJson);
@@ -262,8 +274,10 @@ export async function updatePackage(req: Request, res: Response) {
       info = await metricCalcFromUrl(updatedPackageData.URL);
       log.info("ingest via URL info:", info);
       if (info == null) {
+        log_response(400, "{ error: 'Invalid package update request: Could not get GitHub url' }");
         return res.status(400).json({ error: 'Invalid package update request: Could not get GitHub url' });
       } else if (info.NET_SCORE < 0.5) {
+        log_response(424, "{ error: 'Invalid package update request: Package can not be uploaded due to disqualifying rating.' }");
         return res.status(424).json({ error: 'Invalid package update request: Package can not be uploaded due to disqualifying rating.' });
       }
       info.ID = packageId;
@@ -276,6 +290,7 @@ export async function updatePackage(req: Request, res: Response) {
         },
       });
       if (!response.ok) {
+        log_response(400, "{ error: 'Invalid package update request: Could not get GitHub url' }");
         return res.status(400).json({ error: 'Invalid package update request: Could not get GitHub url' });
       }
       const zipBuffer = Buffer.from(await response.arrayBuffer());
@@ -295,6 +310,7 @@ export async function updatePackage(req: Request, res: Response) {
           throw(error);
         });
     } else {
+      log_response(400, "{ error: 'Invalid package update request: Bad set of Content and URL' }");
       return res.status(400).json({ error: 'Invalid package update request: Bad set of Content and URL' });
     }
 
@@ -338,6 +354,7 @@ export async function updatePackage(req: Request, res: Response) {
       });
 
     // Respond with a success message
+    log_response(200, "{ message: 'Package updated successfully' }");
     res.status(200).json({ message: 'Package updated successfully' });
   } catch (error) {
     log.error('Error handling PUT /package/:id:', error);
@@ -357,7 +374,8 @@ export async function deletePackage(req: Request, res: Response) {
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
     if (!authorizationHeader) {
-    return res.status(400).json({ error: 'Authentication token missing or invalid' });
+      log_response(400, "{ error: 'Authentication token missing or invalid' }");
+      return res.status(400).json({ error: 'Authentication token missing or invalid' });
     }
 
     // Check for permission to delete the package (you can add more logic here)
@@ -396,6 +414,7 @@ export async function deletePackage(req: Request, res: Response) {
     // TODO: Delete version from package history?
 
     // Respond with a success message
+    log_response(200, "{ message: 'Package is deleted' }");
     res.status(200).json({ message: 'Package is deleted' });
   } catch (error) {
     log.error('Error handling DELETE /package/:id:', error);
@@ -418,6 +437,7 @@ export async function createPackage(req: Request, res: Response) {
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
     if (!authorizationHeader) {
+      log_response(400, "{ error: 'Authentication token missing or invalid' }");
       return res.status(400).json({ error: 'Authentication token missing or invalid' });
     }
 
@@ -426,8 +446,11 @@ export async function createPackage(req: Request, res: Response) {
     // Check that package creation request is valid (only Content or URL is set)
     // If request is valid, rate package (valid if rating >= 0.5)
     let info: PackageInfo | null;
-    if (!((packageData.Content == '') !== (packageData.URL == ''))) {
+    if ((packageData.Content && packageData.URL) || (!(packageData.Content) && !(packageData.URL))) {
+      log_response(400, "{ error: 'Invalid package creation request: Bad set of Content and URL' }");
       return res.status(400).json({ error: 'Invalid package creation request: Bad set of Content and URL' });
+    // } else if ((packageData?.Content == '') || (packageData?.URL == '')) {
+    //   return res.status(400).json({ error: 'Invalid package creation request: Content or URL set but no content' });
     } else if (packageData?.Content) {
       log.info("createPackage request via zip upload");
       const zipBuffer = Buffer.from(atob(packageData.Content.split(",")[1]), 'binary');
@@ -444,12 +467,14 @@ export async function createPackage(req: Request, res: Response) {
         }
       });
       if (packageJson == null) {
+        log_response(400, "{ error: 'Invalid package creation request: No package.json found in zip' }");
         return res.status(400).json({ error: 'Invalid package creation request: No package.json found in zip' });
       } else {
         packageJsonContent = JSON.parse(packageJson);
         log.info("repo url:", packageJsonContent?.repository?.url, "name:", packageJsonContent.name, "version:", packageJsonContent.version);
         // Check for repository url, name, and version in package.json
         if (!packageJsonContent?.repository?.url || !packageJsonContent.name || !packageJsonContent.version) {
+          log_response(400, "{ error: 'Invalid package creation request: package.json must contain repository url, package name, and version' }");
           return res.status(400).json({ error: 'Invalid package creation request: package.json must contain repository url, package name, and version' });
         }
       }
@@ -492,8 +517,10 @@ export async function createPackage(req: Request, res: Response) {
       info = await metricCalcFromUrl(packageData.URL);
       log.info("ingest via URL info:", info);
       if (info == null) {
+        log_response(400, "{ error: 'Invalid package creation request: Could not get GitHub url' }");
         return res.status(400).json({ error: 'Invalid package creation request: Could not get GitHub url' });
       } else if (info.NET_SCORE < 0.5) {
+        log_response(424, "{ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' }");
         return res.status(424).json({ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' });
       }
       // If valid, generate package ID from name and version
@@ -508,6 +535,7 @@ export async function createPackage(req: Request, res: Response) {
         },
       });
       if (!response.ok) {
+        log_response(400, "{ error: 'Invalid package creation request: Could not get GitHub url' }");
         return res.status(400).json({ error: 'Invalid package creation request: Could not get GitHub url' });
       }
       const zipBuffer = Buffer.from(await response.arrayBuffer());
@@ -527,6 +555,7 @@ export async function createPackage(req: Request, res: Response) {
           throw(error);
         });
     } else {
+      log_response(400, "{ error: 'Invalid package creation request: Bad set of Content and URL' }");
       return res.status(400).json({ error: 'Invalid package creation request: Bad set of Content and URL' });
     }
     log.info("new package's id:", info);
@@ -554,6 +583,7 @@ export async function createPackage(req: Request, res: Response) {
         throw(error);
       });
     if (exists) {
+      log_response(409, "{ error: 'Invalid package creation request: Package already exists' }");
       return res.status(409).json({ error: 'Invalid package creation request: Package already exists' });
     }
 
@@ -631,6 +661,7 @@ export async function createPackage(req: Request, res: Response) {
         // "JSProgram": "if (process.argv.length === 7) {\nconsole.log('Success')\nprocess.exit(0)\n} else {\nconsole.log('Failed')\nprocess.exit(1)\n}\n"
       }
     }];
+    log_response(201, JSON.stringify(createdPackage));
     res.status(201).json(createdPackage);
   } catch (error) {
     log.error('Error handling POST /package:', error);

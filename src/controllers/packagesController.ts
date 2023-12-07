@@ -8,7 +8,7 @@ import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { Request, Response } from 'express';
 import { PackageQuery, EnumerateOffset, PackageMetadata, AuthenticationToken } from '../types'; // Adjust the path as needed
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
-import { log_request } from './controllerHelpers';
+import { log_request, log_response } from './controllerHelpers';
 
 const dynamoDb = new DynamoDBClient({ region: "us-east-1" });
 
@@ -22,6 +22,7 @@ export const getPackages = async (req: Request, res: Response) => {
     const packageQueries: PackageQuery[] = req.body;
 
     if (!packageQueries || packageQueries.length === 0) {
+      log_response(400, "{ error: 'PackageQuery array must not be empty.' }");
       return res.status(400).json({ error: 'PackageQuery array must not be empty.' });
     }
 
@@ -31,6 +32,7 @@ export const getPackages = async (req: Request, res: Response) => {
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
     if (!authToken || !isValidAuthToken(authToken)) {
+      log_response(400, "{ error: 'Invalid or missing authentication token.' }");
       return res.status(400).json({ error: 'Invalid or missing authentication token.' });
     }
 
@@ -44,6 +46,7 @@ export const getPackages = async (req: Request, res: Response) => {
       if (!isNaN(parseInt(rawOffset, 10))) {
         offset = rawOffset;
       } else {
+        log_response(400, "{ error: 'Invalid offset value.' }");
         return res.status(400).json({ error: 'Invalid offset value.' });
       }
     }
@@ -53,6 +56,7 @@ export const getPackages = async (req: Request, res: Response) => {
     const results = await Promise.all(
       packageQueries.map(async ({ Name, Version }) => {
         if (!Name) {
+          log_response(400, "{ error: 'PackageQuery must have a Name field.' }");
           return res.status(400).json({ error: 'PackageQuery must have a Name field.' });
         }
 
@@ -237,6 +241,7 @@ export const getPackages = async (req: Request, res: Response) => {
                 })
                 : [];
             } else {
+              log_response(400, "{ error: 'Incorrect Version Format' }");
               res.status(400).json({ error: 'Incorrect Version Format' });
             }
           }
@@ -250,9 +255,11 @@ export const getPackages = async (req: Request, res: Response) => {
     // Flatten the array of arrays into a single array
     const allPackages = results.flat();
 
+    log_response(200, JSON.stringify(allPackages));
     res.status(200).json(allPackages); // Send a JSON response with the filtered packages
   } catch (error) {
     console.error('Error handling /packages:', error);
+    log_response(413, "{ error: 'Internal Server Error' }");
     res.status(413).json({ error: 'Internal Server Error' }); // Handle any errors with a 500 status
   }
 };
