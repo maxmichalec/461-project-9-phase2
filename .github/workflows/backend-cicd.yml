@@ -30,7 +30,13 @@ jobs:
       run: docker build -t carolinecgilbert6/461-project-9-phase2-api .
       
     - name: Push to Dockerhub
-      run: docker push carolinecgilbert6/461-project-9-phase2-api:latest
+      # run: docker push carolinecgilbert6/461-project-9-phase2-api:latest
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: carolinecgilbert6/461-project-9-phase2-api:latest
+        secrets: |
+          "GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}"
 
   
   deploy:

@@ -16,6 +16,9 @@ RUN npm install
 ENV LOG_FILE=log.txt
 ENV LOG_LEVEL=2
 
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN)
+
 RUN npm run build
 
 EXPOSE 9000
