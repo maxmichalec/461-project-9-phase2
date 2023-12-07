@@ -7,14 +7,16 @@ RUN npm install -g @angular/cli
 
 COPY package*.json ./
 
+COPY tsconfig.json ./
+
+COPY src ./
+
 RUN npm install
 
 ENV LOG_FILE=log.txt
 ENV LOG_LEVEL=2
 
 RUN npm run build
-
-COPY dist ./dist
 
 EXPOSE 9000
 
