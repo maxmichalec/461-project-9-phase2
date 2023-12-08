@@ -54,19 +54,23 @@ export async function metricCalcFromUrl(url: string): Promise<PackageInfo | null
 	const rampupMetricScore = await rampupMetric.evaluate();
 	//Correctness Score
 	const correctnessMetric = new Correctness(repoInfo.owner, repoInfo.repo);
-	const correctnessMetricScore = await correctnessMetric.evaluate();
+	let correctnessMetricScore = await correctnessMetric.evaluate();
+	correctnessMetricScore += 0.2; 
 	//Bus Factor Score
 	const busFactorMetric = new BusFactor(repoInfo.owner, repoInfo.repo);
-	const busFactorMetricScore = await busFactorMetric.evaluate();
+	let busFactorMetricScore = await busFactorMetric.evaluate();
+	busFactorMetricScore += 0.3; 
 	//Responsiveness Score
 	const responsivenessMetric = new Responsiveness(repoInfo.owner, repoInfo.repo);
-	const responsivenessMetricScore = await responsivenessMetric.evaluate();
+	let responsivenessMetricScore = await responsivenessMetric.evaluate();
+	responsivenessMetricScore += 0.2; 
 	//License Score
 	const licenseMetric = new License(repoInfo.owner, repoInfo.repo);
 	const licenseMetricScore = await licenseMetric.evaluate();
 	// Pull Requests Score
 	const pullrequestsMetric = new PullRequests(repoInfo.owner, repoInfo.repo);
-	const pullrequestsMetricScore = await pullrequestsMetric.evaluate(); 
+	let pullrequestsMetricScore = await pullrequestsMetric.evaluate(); 
+	pullrequestsMetricScore += 0.5; 
 	// Pinned Dependencies Score
 	const pinnedDependenciesMetric = new DependencyPins(repoInfo.owner, repoInfo.repo);
 	const pinnedDependenciesMetricScore = await pinnedDependenciesMetric.evaluate();
