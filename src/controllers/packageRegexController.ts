@@ -5,12 +5,13 @@
  */
 import { Request, Response } from 'express';
 import { AuthenticationToken, PackageMetadata, PackageRegEx } from '../types';
-import { dbclient } from './controllerHelpers';
+import { dbclient, log_request, log_response } from './controllerHelpers';
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 export const postPackageByRegEx = async (req: Request, res: Response) => {
   try {
+    log_request(req);
     console.log('Handling /package/byRegEx request');
 
     // Verify the X-Authorization header for authentication and permission
@@ -20,6 +21,7 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
 
     if (!authorizationHeader) {
       console.error('Authentication token missing or invalid');
+      log_response(400, "{ error: 'Authentication token missing or invalid' }");
       return res.status(400).json({ error: 'Authentication token missing or invalid' });
     }
 
@@ -30,6 +32,7 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
 
     if (!requestBody.RegEx) {
       console.error('Missing or invalid regex in the request body');
+      log_response(400, "{ error: 'Missing or invalid regex in the request body' }");
       return res.status(400).json({ error: 'Missing or invalid regex in the request body' });
     }
 
@@ -67,12 +70,14 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
 
     if (regexFilteredPackages.length === 0) {
       console.warn('No packages found under this regex');
+      log_response(400, "{ error: 'Authentication token missing or invalid' }");
       return res.status(404).json({ error: 'No package found under this regex' });
     }
 
     console.log('Returning packages:', regexFilteredPackages);
 
     // Respond with the package history entries
+    log_response(200, JSON.stringify(regexFilteredPackages));
     res.status(200).json(regexFilteredPackages);
   } catch (error) {
     console.error('Error handling /package/byRegEx:', error);
