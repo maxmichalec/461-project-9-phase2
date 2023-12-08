@@ -2,6 +2,8 @@ FROM node:18
 
 WORKDIR /app
 
+ARG GITHUB_TOKEN
+
 # Install Angular CLI globally (if not already installed)
 RUN npm install -g @angular/cli
 
@@ -15,9 +17,7 @@ RUN npm install
 
 ENV LOG_FILE=log.txt
 ENV LOG_LEVEL=2
-
-RUN --mount=type=secret,id=GITHUB_TOKEN \
-    export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN)
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 
 RUN npm run build
 
