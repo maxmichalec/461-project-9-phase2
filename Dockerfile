@@ -24,4 +24,5 @@ RUN npm run build
 EXPOSE 9000
 
 # Redirect any console.log()s to a file
-CMD [ "/bin/sh", "-c", "node dist/app.js > console_log.txt 2>&1" ]
+# CMD [ "/bin/sh", "-c", "node dist/app.js > console_log.txt 2>&1" ]
+CMD [ "/bin/sh", "-c", "node dist/app.js" ]
