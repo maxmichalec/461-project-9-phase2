@@ -213,6 +213,13 @@ export async function updatePackage(req: Request, res: Response) {
       return res.status(400).json({ error: 'Invalid package update request: Bad set of Content and URL' });
     } else if (updatedPackageData?.Content) {
       log.info("updatePackage request via zip upload");
+      const base64Data = updatedPackageData.Content.split(",")[1];
+      const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+
+      if (!base64Data || !base64Regex.test(base64Data)) {
+        return res.status(400).json({ error: 'Invalid base64-encoded data' });
+      }
+      try {
       const zipBuffer = Buffer.from(atob(updatedPackageData.Content.split(",")[1]), 'binary');
 
       // Extract package.json from zip file
@@ -269,6 +276,9 @@ export async function updatePackage(req: Request, res: Response) {
           log.error("Error storing object to S3:", error);
           throw(error);
         });
+      } catch (error) {
+        return res.status(400).json({ error: 'Invalid base64-encoded data' });
+      }
     } else if (updatedPackageData?.URL) {
       log.info("updatePackage request via public ingest:", updatedPackageData.URL);
       info = await metricCalcFromUrl(updatedPackageData.URL);
@@ -453,6 +463,15 @@ export async function createPackage(req: Request, res: Response) {
     //   return res.status(400).json({ error: 'Invalid package creation request: Content or URL set but no content' });
     } else if (packageData?.Content) {
       log.info("createPackage request via zip upload");
+      
+      const base64Data = packageData.Content.split(",")[1];
+      const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+
+      if (!base64Data || !base64Regex.test(base64Data)) {
+        console.log("Return value 400 invlaid base64-encoded data");
+        return res.status(400).json({ error: 'Invalid base64-encoded data' });
+      }
+      try {
       const zipBuffer = Buffer.from(atob(packageData.Content.split(",")[1]), 'binary');
 
       // Extract package.json from zip file
@@ -512,6 +531,10 @@ export async function createPackage(req: Request, res: Response) {
           log.error("Error storing object to S3:", error);
           throw(error);
         });
+      } catch (error) {
+        console.log("Return 400: catch exception");
+        return res.status(400).json({ error: 'Invalid base64-encoded data' });
+      }
     } else if (packageData?.URL) {
       log.info("createPackage request via public ingest:", packageData.URL);
       info = await metricCalcFromUrl(packageData.URL);
