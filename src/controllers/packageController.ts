@@ -85,6 +85,7 @@ export async function getPackageById (req: Request, res: Response) {
         await response.Body?.transformToString('base64').then((arrayBuffer) => {
           content = arrayBuffer;
           package1!.data!.Content = content;
+          package1!.data!.URL = undefined; 
         });
         log.info("Received content");
       })
@@ -215,19 +216,19 @@ export async function updatePackage(req: Request, res: Response) {
       return res.status(400).json({ error: 'Invalid package update request: Bad set of Content and URL' });
     } else if (updatedPackageData?.Content) {
       log.info("updatePackage request via zip upload");
-      const base64Data = updatedPackageData.Content.split(",")[1];
+      const base64Data = updatedPackageData.Content;
       const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
 
       if(!base64Data) {
         console.log("Return value 400 invalid base64-encoded data.  USING !base64Data");
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
       }
-      if (!base64Regex.test(base64Data)) {
+      /*if (!base64Regex.test(base64Data)) {
         console.log("Return value 400 invalid base64-encoded data: USING !base64Regex.test(base64Data)");
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
-      }
+      }*/
       try {
-      const zipBuffer = Buffer.from(atob(updatedPackageData.Content.split(",")[1]), 'binary');
+      const zipBuffer = Buffer.from(atob(updatedPackageData.Content), 'binary');
 
       // Extract package.json from zip file
       const zip = new AdmZip(zipBuffer);
@@ -473,7 +474,7 @@ export async function createPackage(req: Request, res: Response) {
     } else if (packageData?.Content) {
       log.info("createPackage request via zip upload");
       
-      const base64Data = packageData.Content.split(",")[1];
+      const base64Data = packageData.Content;
       const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
 
       if(!base64Data) {
@@ -481,12 +482,12 @@ export async function createPackage(req: Request, res: Response) {
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
       }
 
-      if (!base64Regex.test(base64Data)) {
+      /*if (!base64Regex.test(base64Data)) {
         console.log("Return value 400 invalid base64-encoded data: USING !base64Regex.test(base64Data)");
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
-      }
+      }*/
       try {
-      const zipBuffer = Buffer.from(atob(packageData.Content.split(",")[1]), 'binary');
+      const zipBuffer = Buffer.from(atob(packageData.Content), 'binary');
 
       // Extract package.json from zip file
       const zip = new AdmZip(zipBuffer);
