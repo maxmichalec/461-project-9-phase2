@@ -561,7 +561,7 @@ export async function createPackage(req: Request, res: Response) {
       info.ID = id;
 
       // Download package content from GitHub using info
-      const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/main`, {
+      /*const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/main`, {
         headers: {
           Authorization: process.env.GITHUB_TOKEN || "",
           Accept: 'application/vnd.github.v3+json',
@@ -586,7 +586,7 @@ export async function createPackage(req: Request, res: Response) {
         .catch((error: unknown) => {
           log.error("Error storing object to S3:", error);
           throw(error);
-        });
+        });*/
     } else {
       log_response(400, "{ error: 'Invalid package creation request: Bad set of Content and URL' }");
       return res.status(400).json({ error: 'Invalid package creation request: Bad set of Content and URL' });
@@ -682,7 +682,7 @@ export async function createPackage(req: Request, res: Response) {
       });
 
     // Respond with a success message and the created package data
-    const createdPackage = [
+    const createdPackage = 
     {
       "metadata": {
         "Name": info.NAME,
@@ -690,10 +690,11 @@ export async function createPackage(req: Request, res: Response) {
         "ID": id
       },
       "data": {
-        "Content": "",
+        "Content": packageData.Content,
+        "URL": packageData.URL
         // "JSProgram": "if (process.argv.length === 7) {\nconsole.log('Success')\nprocess.exit(0)\n} else {\nconsole.log('Failed')\nprocess.exit(1)\n}\n"
       }
-    }];
+    };
     log_response(201, JSON.stringify(createdPackage));
     res.status(201).json(createdPackage);
   } catch (error) {

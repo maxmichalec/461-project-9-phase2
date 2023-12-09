@@ -212,7 +212,6 @@ export const getPackages = async (req: Request, res: Response) => {
                 })
                 : [];
             } else if (tildeRange) {
-              // const tildeMatch = /^\~(\d+)\.(\d+)\.(\d+)$/.exec(Version);
               const tildeMatch = /^~(\d+)\.(\d+)\.(\d+)$/.exec(Version);
               const [major, minor, patch] = (tildeMatch || []).slice(1).map(Number)
               const startVersion = `${major}.${minor}.${patch}`
