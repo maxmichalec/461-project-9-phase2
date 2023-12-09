@@ -690,7 +690,8 @@ export async function createPackage(req: Request, res: Response) {
         "ID": id
       },
       "data": {
-        "Content": "",
+        "Content": packageData.Content,
+        "URL": packageData.URL
         // "JSProgram": "if (process.argv.length === 7) {\nconsole.log('Success')\nprocess.exit(0)\n} else {\nconsole.log('Failed')\nprocess.exit(1)\n}\n"
       }
     };
