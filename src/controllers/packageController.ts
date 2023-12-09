@@ -443,6 +443,8 @@ export async function createPackage(req: Request, res: Response) {
     log_request(req);
     // Extract the package data from the request body
     const packageData: PackageData = req.body as PackageData;
+    console.log(packageData);
+    console.log(packageData.Content);
 
     let id: PackageId, s3path: string = "";
 
