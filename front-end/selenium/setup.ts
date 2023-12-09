@@ -1,5 +1,6 @@
 import { Builder, WebDriver } from 'selenium-webdriver';
-import { baseUrl, fs, logFilePath } from './config';
+import { baseUrl, logFilePath } from './config';
+import * as fs from 'fs';
 
 // Function to log messages to a file
 export function logToFile(message: string) {

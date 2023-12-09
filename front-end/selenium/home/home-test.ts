@@ -1,6 +1,5 @@
 import { By, WebDriver, until } from 'selenium-webdriver';
 import { logToFile } from '../setup';
-import { log } from 'console';
 
 // Function to test the home page
 export async function homeTest(driver: WebDriver): Promise<void> {
