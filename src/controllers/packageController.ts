@@ -13,6 +13,7 @@ export async function getPackageById (req: Request, res: Response) {
     const packageId: PackageId = req.params.id; // Extract the package ID from the URL
     let packageName = "";
     let packageVersion = "";
+    let packageURL = undefined; 
 
     // Verify the X-Authorization header for authentication and permission
     const authorizationHeader: AuthenticationToken | undefined = Array.isArray(req.headers['x-authorization'])
@@ -54,10 +55,11 @@ export async function getPackageById (req: Request, res: Response) {
               "ID": packageId
             },
             data: {
-              "Content": "",
               "JSProgram": "",
+              "URL": response.Item?.repoURL?.S || undefined
             }
           }
+          packageURL = response.Item?.repoURL?.S || undefined;
           packageName = response.Item?.name?.S || "";
           packageVersion = response.Item?.version?.S || "";
         }
@@ -90,7 +92,7 @@ export async function getPackageById (req: Request, res: Response) {
         log.error("Error downloading object from S3:", error);
       });
     
-    if (content == null) {
+    if (content == null && packageURL == undefined) {
       log_response(404, "{ error: 'Package content not found' }");
       return res.status(404).json({ error: 'Package content not found' });
     }
