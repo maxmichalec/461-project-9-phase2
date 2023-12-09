@@ -216,7 +216,12 @@ export async function updatePackage(req: Request, res: Response) {
       const base64Data = updatedPackageData.Content.split(",")[1];
       const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
 
-      if (!base64Data || !base64Regex.test(base64Data)) {
+      if(!base64Data) {
+        console.log("Return value 400 invalid base64-encoded data.  USING !base64Data");
+        return res.status(400).json({ error: 'Invalid base64-encoded data' });
+      }
+      if (!base64Regex.test(base64Data)) {
+        console.log("Return value 400 invalid base64-encoded data: USING !base64Regex.test(base64Data)");
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
       }
       try {
@@ -467,8 +472,13 @@ export async function createPackage(req: Request, res: Response) {
       const base64Data = packageData.Content.split(",")[1];
       const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
 
-      if (!base64Data || !base64Regex.test(base64Data)) {
-        console.log("Return value 400 invlaid base64-encoded data");
+      if(!base64Data) {
+        console.log("Return value 400 invalid base64-encoded data.  USING !base64Data");
+        return res.status(400).json({ error: 'Invalid base64-encoded data' });
+      }
+
+      if (!base64Regex.test(base64Data)) {
+        console.log("Return value 400 invalid base64-encoded data: USING !base64Regex.test(base64Data)");
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
       }
       try {
