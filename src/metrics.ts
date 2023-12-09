@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 const { graphql } = require("@octokit/graphql");
 import { GraphqlResponseError } from "@octokit/graphql";
 
-import fs from "fs";
+import fs, { unwatchFile } from "fs";
 import http from "isomorphic-git/http/node";
 import { clone } from "isomorphic-git";
 import path from "path";
@@ -745,7 +745,7 @@ export class DependencyPins extends BaseMetric {
 
 		for (const dependency in dependencies) {
 			const version = dependencies[dependency];
-			if (/^(?:\d+\.\d+\.\d+|\d+\.\d+(\.[\d+*Xx])?|~\d+\.\d+(\.\d+)?|\^0\.\d+(\.\d+)?|\d+\.\d+(\.[*Xx])?)$/.test(version)) {
+			if (/^(?:\d+\.\d+\.\d+|\d+\.\d+(\.[\d+\*Xx])?|~\d+\.\d+(\.\d+)?|\^0\.\d+(\.\d+)?|\d+\.\d+(\.[\*Xx])?)$/.test(version)) {
 				pinnedDeps++;
 			}
 		}
