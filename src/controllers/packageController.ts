@@ -171,8 +171,8 @@ export async function updatePackage(req: Request, res: Response) {
 
     // Check if name and version match id
     if (generatePackageId(packageName, packageVersion) !== packageId) {
-      log_response(400, "{ error: 'Package name and version do not match package ID' }");
-      return res.status(400).json({ error: 'Package name and version do not match package ID' });
+      log_response(404, "{ error: 'Package name and version do not match package ID' }");
+      return res.status(404).json({ error: 'Package name and version do not match package ID' });
     }
 
     // Get the Package from the request body
