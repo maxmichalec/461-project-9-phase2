@@ -54,8 +54,9 @@ export async function getPackageById (req: Request, res: Response) {
               "ID": packageId
             },
             data: {
-              "Content": "",
               "JSProgram": "",
+              "URL": response.Item?.repoURL?.S || undefined,
+              "Content": ""
             }
           }
           packageName = response.Item?.name?.S || "";
@@ -213,19 +214,19 @@ export async function updatePackage(req: Request, res: Response) {
       return res.status(400).json({ error: 'Invalid package update request: Bad set of Content and URL' });
     } else if (updatedPackageData?.Content) {
       log.info("updatePackage request via zip upload");
-      const base64Data = updatedPackageData.Content.split(",")[1];
+      const base64Data = updatedPackageData.Content;
       const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
 
       if(!base64Data) {
         console.log("Return value 400 invalid base64-encoded data.  USING !base64Data");
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
       }
-      if (!base64Regex.test(base64Data)) {
+      /*if (!base64Regex.test(base64Data)) {
         console.log("Return value 400 invalid base64-encoded data: USING !base64Regex.test(base64Data)");
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
-      }
+      }*/
       try {
-      const zipBuffer = Buffer.from(atob(updatedPackageData.Content.split(",")[1]), 'binary');
+      const zipBuffer = Buffer.from(atob(updatedPackageData.Content), 'binary');
 
       // Extract package.json from zip file
       const zip = new AdmZip(zipBuffer);
@@ -298,14 +299,14 @@ export async function updatePackage(req: Request, res: Response) {
       info.ID = packageId;
 
       // Download package content from GitHub using info
-      const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/main`, {
+      const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/HEAD`, {
         headers: {
           Authorization: process.env.GITHUB_TOKEN || "",
           Accept: 'application/vnd.github.v3+json',
         },
       });
       if (!response.ok) {
-        log_response(400, "{ error: 'Invalid package update request: Could not get GitHub url' }");
+        log_response(400, "{ error: 'Invalid package update request: Could not get GitHub url for zip package download' }");
         return res.status(400).json({ error: 'Invalid package update request: Could not get GitHub url' });
       }
       const zipBuffer = Buffer.from(await response.arrayBuffer());
@@ -471,7 +472,7 @@ export async function createPackage(req: Request, res: Response) {
     } else if (packageData?.Content) {
       log.info("createPackage request via zip upload");
       
-      const base64Data = packageData.Content.split(",")[1];
+      const base64Data = packageData.Content;
       const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
 
       if(!base64Data) {
@@ -479,12 +480,12 @@ export async function createPackage(req: Request, res: Response) {
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
       }
 
-      if (!base64Regex.test(base64Data)) {
+      /*if (!base64Regex.test(base64Data)) {
         console.log("Return value 400 invalid base64-encoded data: USING !base64Regex.test(base64Data)");
         return res.status(400).json({ error: 'Invalid base64-encoded data' });
-      }
+      }*/
       try {
-      const zipBuffer = Buffer.from(atob(packageData.Content.split(",")[1]), 'binary');
+      const zipBuffer = Buffer.from(atob(packageData.Content), 'binary');
 
       // Extract package.json from zip file
       const zip = new AdmZip(zipBuffer);
@@ -563,14 +564,14 @@ export async function createPackage(req: Request, res: Response) {
       info.ID = id;
 
       // Download package content from GitHub using info
-      /*const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/main`, {
+      const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/HEAD`, {
         headers: {
           Authorization: process.env.GITHUB_TOKEN || "",
           Accept: 'application/vnd.github.v3+json',
         },
       });
       if (!response.ok) {
-        log_response(400, "{ error: 'Invalid package creation request: Could not get GitHub url' }");
+        log_response(400, "{ error: 'Invalid package zipfile creation request: Could not get GitHub url' }");
         return res.status(400).json({ error: 'Invalid package creation request: Could not get GitHub url' });
       }
       const zipBuffer = Buffer.from(await response.arrayBuffer());
@@ -588,7 +589,7 @@ export async function createPackage(req: Request, res: Response) {
         .catch((error: unknown) => {
           log.error("Error storing object to S3:", error);
           throw(error);
-        });*/
+        });
     } else {
       log_response(400, "{ error: 'Invalid package creation request: Bad set of Content and URL' }");
       return res.status(400).json({ error: 'Invalid package creation request: Bad set of Content and URL' });
