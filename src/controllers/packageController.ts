@@ -148,7 +148,7 @@ export async function getPackageById (req: Request, res: Response) {
 export async function updatePackage(req: Request, res: Response) {
   try {
     log_request(req);
-    const packageId: PackageId = req.body.metadata.ID; // Extract the package ID from the URL
+    const packageId: PackageId = req.params.id; // Extract the package ID from the URL
     const packageName: PackageName = req.body.metadata.Name;
     const packageVersion = req.body.metadata.Version;
     log.info(`updatePackage request id: ${packageId}, name: ${packageName}, version: ${packageVersion}`);
