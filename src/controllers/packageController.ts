@@ -13,7 +13,6 @@ export async function getPackageById (req: Request, res: Response) {
     const packageId: PackageId = req.params.id; // Extract the package ID from the URL
     let packageName = "";
     let packageVersion = "";
-    let packageURL = undefined; 
 
     // Verify the X-Authorization header for authentication and permission
     const authorizationHeader: AuthenticationToken | undefined = Array.isArray(req.headers['x-authorization'])
@@ -56,10 +55,10 @@ export async function getPackageById (req: Request, res: Response) {
             },
             data: {
               "JSProgram": "",
-              "URL": response.Item?.repoURL?.S || undefined
+              "URL": response.Item?.repoURL?.S || undefined,
+              "Content": ""
             }
           }
-          packageURL = response.Item?.repoURL?.S || undefined;
           packageName = response.Item?.name?.S || "";
           packageVersion = response.Item?.version?.S || "";
         }
@@ -85,7 +84,6 @@ export async function getPackageById (req: Request, res: Response) {
         await response.Body?.transformToString('base64').then((arrayBuffer) => {
           content = arrayBuffer;
           package1!.data!.Content = content;
-          package1!.data!.URL = undefined; 
         });
         log.info("Received content");
       })
@@ -93,7 +91,7 @@ export async function getPackageById (req: Request, res: Response) {
         log.error("Error downloading object from S3:", error);
       });
     
-    if (content == null && packageURL == undefined) {
+    if (content == null) {
       log_response(404, "{ error: 'Package content not found' }");
       return res.status(404).json({ error: 'Package content not found' });
     }
@@ -301,14 +299,14 @@ export async function updatePackage(req: Request, res: Response) {
       info.ID = packageId;
 
       // Download package content from GitHub using info
-      const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/main`, {
+      const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/HEAD`, {
         headers: {
           Authorization: process.env.GITHUB_TOKEN || "",
           Accept: 'application/vnd.github.v3+json',
         },
       });
       if (!response.ok) {
-        log_response(400, "{ error: 'Invalid package update request: Could not get GitHub url' }");
+        log_response(400, "{ error: 'Invalid package update request: Could not get GitHub url for zip package download' }");
         return res.status(400).json({ error: 'Invalid package update request: Could not get GitHub url' });
       }
       const zipBuffer = Buffer.from(await response.arrayBuffer());
@@ -566,14 +564,14 @@ export async function createPackage(req: Request, res: Response) {
       info.ID = id;
 
       // Download package content from GitHub using info
-      /*const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/main`, {
+      const response = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/zipball/HEAD`, {
         headers: {
           Authorization: process.env.GITHUB_TOKEN || "",
           Accept: 'application/vnd.github.v3+json',
         },
       });
       if (!response.ok) {
-        log_response(400, "{ error: 'Invalid package creation request: Could not get GitHub url' }");
+        log_response(400, "{ error: 'Invalid package zipfile creation request: Could not get GitHub url' }");
         return res.status(400).json({ error: 'Invalid package creation request: Could not get GitHub url' });
       }
       const zipBuffer = Buffer.from(await response.arrayBuffer());
@@ -591,7 +589,7 @@ export async function createPackage(req: Request, res: Response) {
         .catch((error: unknown) => {
           log.error("Error storing object to S3:", error);
           throw(error);
-        });*/
+        });
     } else {
       log_response(400, "{ error: 'Invalid package creation request: Bad set of Content and URL' }");
       return res.status(400).json({ error: 'Invalid package creation request: Bad set of Content and URL' });
