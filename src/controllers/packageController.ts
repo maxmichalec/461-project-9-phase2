@@ -448,6 +448,7 @@ export async function createPackage(req: Request, res: Response) {
     console.log(packageData.Content);
 
     let id: PackageId, s3path: string = "";
+    let finalcontent: string = "";
 
     // Verify the X-Authorization header for authentication
     const authorizationHeader: AuthenticationToken | undefined = Array.isArray(req.headers['x-authorization'])
@@ -470,6 +471,7 @@ export async function createPackage(req: Request, res: Response) {
     // } else if ((packageData?.Content == '') || (packageData?.URL == '')) {
     //   return res.status(400).json({ error: 'Invalid package creation request: Content or URL set but no content' });
     } else if (packageData?.Content) {
+      finalcontent = packageData?.Content; 
       log.info("createPackage request via zip upload");
       
       const base64Data = packageData.Content;
@@ -575,6 +577,7 @@ export async function createPackage(req: Request, res: Response) {
         return res.status(400).json({ error: 'Invalid package creation request: Could not get GitHub url' });
       }
       const zipBuffer = Buffer.from(await response.arrayBuffer());
+      finalcontent = zipBuffer.toString('base64');
 
       // Upload package content to S3 bucket and make reference in database
       const s3params = {
@@ -693,8 +696,7 @@ export async function createPackage(req: Request, res: Response) {
         "ID": id
       },
       "data": {
-        "Content": packageData.Content,
-        "URL": packageData.URL
+        "Content": finalcontent,
         // "JSProgram": "if (process.argv.length === 7) {\nconsole.log('Success')\nprocess.exit(0)\n} else {\nconsole.log('Failed')\nprocess.exit(1)\n}\n"
       }
     };
