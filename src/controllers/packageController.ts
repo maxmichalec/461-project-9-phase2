@@ -215,7 +215,6 @@ export async function updatePackage(req: Request, res: Response) {
     } else if (updatedPackageData?.Content) {
       log.info("updatePackage request via zip upload");
       const base64Data = updatedPackageData.Content;
-      const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
 
       if(!base64Data) {
         console.log("Return value 400 invalid base64-encoded data.  USING !base64Data");
@@ -475,7 +474,6 @@ export async function createPackage(req: Request, res: Response) {
       log.info("createPackage request via zip upload");
       
       const base64Data = packageData.Content;
-      const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
 
       if(!base64Data) {
         console.log("Return value 400 invalid base64-encoded data.  USING !base64Data");
