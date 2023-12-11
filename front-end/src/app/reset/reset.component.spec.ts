@@ -173,6 +173,5 @@ describe('ResetComponent', () => {
     expect(component.resetMessage).toEqual('Application reset successful.');
     console.log('component.resetMessage for correct auth: ', component.resetMessage);
   });
-
   });
   
