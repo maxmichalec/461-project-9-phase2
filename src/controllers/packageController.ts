@@ -286,11 +286,9 @@ export async function updatePackage(req: Request, res: Response) {
 						400,
 						"{ error: 'Invalid package update request: No package.json found in zip' }",
 					);
-					return res
-						.status(400)
-						.json({
-							error: 'Invalid package update request: No package.json found in zip',
-						});
+					return res.status(400).json({
+						error: 'Invalid package update request: No package.json found in zip',
+					});
 				} else {
 					packageJsonContent = JSON.parse(packageJson);
 					log.info(
@@ -307,11 +305,9 @@ export async function updatePackage(req: Request, res: Response) {
 						!packageJsonContent.name ||
 						!packageJsonContent.version
 					) {
-						return res
-							.status(400)
-							.json({
-								error: 'Invalid package update request: package.json must contain repository url, package name, and version',
-							});
+						return res.status(400).json({
+							error: 'Invalid package update request: package.json must contain repository url, package name, and version',
+						});
 					}
 				}
 
@@ -367,11 +363,9 @@ export async function updatePackage(req: Request, res: Response) {
 					424,
 					"{ error: 'Invalid package update request: Package can not be uploaded due to disqualifying rating.' }",
 				);
-				return res
-					.status(424)
-					.json({
-						error: 'Invalid package update request: Package can not be uploaded due to disqualifying rating.',
-					});
+				return res.status(424).json({
+					error: 'Invalid package update request: Package can not be uploaded due to disqualifying rating.',
+				});
 			}
 			info.ID = packageId;
 
@@ -611,11 +605,9 @@ export async function createPackage(req: Request, res: Response) {
 						400,
 						"{ error: 'Invalid package creation request: No package.json found in zip' }",
 					);
-					return res
-						.status(400)
-						.json({
-							error: 'Invalid package creation request: No package.json found in zip',
-						});
+					return res.status(400).json({
+						error: 'Invalid package creation request: No package.json found in zip',
+					});
 				} else {
 					packageJsonContent = JSON.parse(packageJson);
 					log.info(
@@ -636,11 +628,9 @@ export async function createPackage(req: Request, res: Response) {
 							400,
 							"{ error: 'Invalid package creation request: package.json must contain repository url, package name, and version' }",
 						);
-						return res
-							.status(400)
-							.json({
-								error: 'Invalid package creation request: package.json must contain repository url, package name, and version',
-							});
+						return res.status(400).json({
+							error: 'Invalid package creation request: package.json must contain repository url, package name, and version',
+						});
 					}
 				}
 
@@ -708,11 +698,9 @@ export async function createPackage(req: Request, res: Response) {
 					424,
 					"{ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' }",
 				);
-				return res
-					.status(424)
-					.json({
-						error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.',
-					});
+				return res.status(424).json({
+					error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.',
+				});
 			}
 			// If valid, generate package ID from name and version
 			id = generatePackageId(info.NAME, info.VERSION);
