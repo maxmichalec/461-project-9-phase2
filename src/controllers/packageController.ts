@@ -555,7 +555,7 @@ export async function createPackage(req: Request, res: Response) {
       if (info == null) {
         log_response(400, "{ error: 'Invalid package creation request: Could not get GitHub url' }");
         return res.status(400).json({ error: 'Invalid package creation request: Could not get GitHub url' });
-      } else if (info.NET_SCORE < 0.5) {
+      } else if (info.NET_SCORE < 0.5 || info.BUS_FACTOR_SCORE < 0.5 || info.CORRECTNESS_SCORE < 0.5 || info.LICENSE_SCORE < 0.5 || info.PINNED_DEPENDENCIES_SCORE < 0.5 || info.PULL_REQUESTS_SCORE < 0.5 || info.RAMP_UP_SCORE < 0.5 || info.RESPONSIVE_MAINTAINER_SCORE < 0.5) {
         log_response(424, "{ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' }");
         return res.status(424).json({ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' });
       }
