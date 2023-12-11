@@ -5,14 +5,14 @@
  */
 
 // Import the CommonModule in your package.module.ts
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { PackagesComponent } from './packages.component';
+import { CommonModule } from '@angular/common'
+import { NgModule } from '@angular/core'
+import { FormsModule } from '@angular/forms'
+import { PackagesComponent } from './packages.component'
 
 @NgModule({
-  declarations: [PackagesComponent],
-  imports: [FormsModule, CommonModule],
-  exports: [PackagesComponent],
+	declarations: [PackagesComponent],
+	imports: [FormsModule, CommonModule],
+	exports: [PackagesComponent],
 })
-export class PackagesModule { }
+export class PackagesModule {}

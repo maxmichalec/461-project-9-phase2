@@ -1,25 +1,37 @@
 <!-- packages.component.html -->
 
 <div class="form-container">
-  <h2>Fetch Packages</h2>
-  <label for="packageName1">Package Name:</label>
-  <input id="packageName1" [(ngModel)]="packageName" placeholder="Enter Package Name" aria-label="Package Name Input">
-  
-  <label for="packageVersion">Package Version:</label>
-  <input id="packageVersion" [(ngModel)]="packageVersion" placeholder="Enter Package Version" aria-label="Package Version Input">
-  
-  <button id="fetchButton" type="button" (click)="onSubmit()">Fetch Packages</button>
+	<h2>Fetch Packages</h2>
+	<label for="packageName1">Package Name:</label>
+	<input
+		id="packageName1"
+		[(ngModel)]="packageName"
+		placeholder="Enter Package Name"
+		aria-label="Package Name Input"
+	/>
+
+	<label for="packageVersion">Package Version:</label>
+	<input
+		id="packageVersion"
+		[(ngModel)]="packageVersion"
+		placeholder="Enter Package Version"
+		aria-label="Package Version Input"
+	/>
+
+	<button id="fetchButton" type="button" (click)="onSubmit()">Fetch Packages</button>
 </div>
 
 <div *ngIf="packages.length > 0" class="package-list-container">
-  <h2>Package List</h2>
-  <ul>
-    <li *ngFor="let package of packages" class="package-item">
-      <div class="package-box">
-        <span class="package-name">{{ package.Name }}</span><br>
-        <span class="package-version"> Version: {{ package.Version }}</span><br>
-        <span class="package-id"> ID: {{ package.ID }}</span>
-      </div>
-    </li>
-  </ul>
+	<h2>Package List</h2>
+	<ul>
+		<li *ngFor="let package of packages" class="package-item">
+			<div class="package-box">
+				<span class="package-name">{{ package.Name }}</span
+				><br />
+				<span class="package-version"> Version: {{ package.Version }}</span
+				><br />
+				<span class="package-id"> ID: {{ package.ID }}</span>
+			</div>
+		</li>
+	</ul>
 </div>

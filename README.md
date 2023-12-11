@@ -6,9 +6,9 @@ This project is a full-stack web application designed to provide a robust interf
 
 ## Dependencies
 
-- Node.js
-- Angular
-- Docker (optional for deployment)
+-   Node.js
+-   Angular
+-   Docker (optional for deployment)
 
 ## Usage
 
@@ -42,18 +42,17 @@ We used jest for our tests and our test files are located in the `test/` directo
 
 You must have a `GITHUB_TOKEN` and `LOG_FILE` environment variables set in a .env file in the root directory of the project. `LOG_LEVEL` is optional and defaults to 0.
 
-
 ## Testing
 
 Front-end testing is completed using the Selenium testing framework with TypeScript.
 
-The selenium test files are located in the [selenium](front-end/selenium/) directory. 
+The selenium test files are located in the [selenium](front-end/selenium/) directory.
 
 The selenium test suite logger is the [selenium-test.log](./selenium-test.log) file.
 
 To run the selenium testing framework, run `./selenium-test.sh` from the [root](./) directory. This will install the necessary dependencies, compile the TypeScript code, setup the selenium logger, and run the selenium test suite.
 
-- You must have an `IAM AUTHENTICATION TOKEN` for the tests to access the AWS DB hosting the packages in the registry. If you do not have a token, the test suite is still able to execute but expect most tests to fail.
+-   You must have an `IAM AUTHENTICATION TOKEN` for the tests to access the AWS DB hosting the packages in the registry. If you do not have a token, the test suite is still able to execute but expect most tests to fail.
 
 ## Automated Testing
 
@@ -61,10 +60,9 @@ Back-end: Run unit tests for the back-end:
 cd src
 npm test
 
-Front-end: 
+Front-end:
 cd front-end
 npm run test:selenium
-
 
 ## Contributors
 

@@ -1,54 +1,52 @@
 name: API-CICD
 
 on:
-  push:
-    branches:
-      - main
-      - backend-ci-cd
+    push:
+        branches:
+            - main
+            - backend-ci-cd
 
 jobs:
+    build:
+        runs-on: ubuntu-latest
 
-  build:
-    runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
 
-    steps:
-    - uses: actions/checkout@v3
+            - name: Build the Application
+              run: npm install && npm run build
 
-    - name: Build the Application
-      run: npm install && npm run build
-    
-    - name: Test the Application
-      run: echo "Add testing for the application"
+            - name: Test the Application
+              run: echo "Add testing for the application"
 
-    - name: Login to Dockerhub
-      env: 
-        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      
-    - name: Build the Docker image
-      run: docker build --build-arg GITHUB_TOKEN=${{ secrets.GH_PAT }} -t carolinecgilbert6/461-project-9-phase2-api .
-      
-    - name: Push to Dockerhub
-      run: docker push carolinecgilbert6/461-project-9-phase2-api:latest
+            - name: Login to Dockerhub
+              env:
+                  DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+                  DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+              run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-  
-  deploy:
-    needs: build
-    runs-on: [self-hosted, back-end]
-    
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+            - name: Build the Docker image
+              run: docker build --build-arg GITHUB_TOKEN=${{ secrets.GH_PAT }} -t carolinecgilbert6/461-project-9-phase2-api .
 
-      - name: Print Repository Contents
-        run: ls -R $GITHUB_WORKSPACE
-        
-      - name: Pull Docker image
-        run: sudo docker pull carolinecgilbert6/461-project-9-phase2-api:latest
+            - name: Push to Dockerhub
+              run: docker push carolinecgilbert6/461-project-9-phase2-api:latest
 
-      - name: Delete Old Docker Container
-        run: sudo docker rm -f 461-project-9-phase2-api-container || true
+    deploy:
+        needs: build
+        runs-on: [self-hosted, back-end]
 
-      - name: Run Docker Container
-        run: sudo docker run -d -p 9000:9000 --name 461-project-9-phase2-api-container carolinecgilbert6/461-project-9-phase2-api
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v2
+
+            - name: Print Repository Contents
+              run: ls -R $GITHUB_WORKSPACE
+
+            - name: Pull Docker image
+              run: sudo docker pull carolinecgilbert6/461-project-9-phase2-api:latest
+
+            - name: Delete Old Docker Container
+              run: sudo docker rm -f 461-project-9-phase2-api-container || true
+
+            - name: Run Docker Container
+              run: sudo docker run -d -p 9000:9000 --name 461-project-9-phase2-api-container carolinecgilbert6/461-project-9-phase2-api

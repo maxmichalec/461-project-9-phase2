@@ -1,36 +1,33 @@
 /* tslint:disable */
 /* eslint-disable */
-import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
+import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { ApiConfiguration, ApiConfigurationParams } from './api-configuration'
 
-import { ApiService } from './services/api.service';
+import { ApiService } from './services/api.service'
 
 /**
  * Module that provides all services and configuration.
  */
 @NgModule({
-  imports: [],
-  exports: [],
-  declarations: [],
-  providers: [
-    ApiService,
-    ApiConfiguration
-  ],
+	imports: [],
+	exports: [],
+	declarations: [],
+	providers: [ApiService, ApiConfiguration],
 })
 export class ApiModule {
-  static forRoot(params: ApiConfigurationParams): ModuleWithProviders<ApiModule> {
-    return {
-      ngModule: ApiModule,
-      providers: [
-        {
-          provide: ApiConfiguration,
-          useValue: params
-        }
-      ]
-    }
-  }
-/*
+	static forRoot(params: ApiConfigurationParams): ModuleWithProviders<ApiModule> {
+		return {
+			ngModule: ApiModule,
+			providers: [
+				{
+					provide: ApiConfiguration,
+					useValue: params,
+				},
+			],
+		}
+	}
+	/*
   constructor( 
     @Optional() @SkipSelf() parentModule: ApiModule,
     @Optional() http: HttpClient
