@@ -95,41 +95,131 @@ export const getPackages = async (req: Request, res: Response) => {
 					// Handle the case where Name is not "*"
 					let filteredPackages: PackageMetadata[] = [];
 
-					if (!Version) {
-						const params = {
-							TableName: 'packages', // Replace with your DynamoDB table name
-							FilterExpression: '#n = :name' + (Version ? ' AND #v = :version' : ''),
-							ExpressionAttributeNames: {
-								'#n': 'name', // Attribute name for 'Name'
-								...(Version ? { '#v': 'version' } : {}), // Add 'Version' attribute name if a version is provided
-							},
-							ExpressionAttributeValues: marshall({
-								':name': Name,
-								...(Version ? { ':version': Version } : {}),
-							}),
-							ExclusiveStartKey: offset
-								? unmarshall(JSON.parse(Buffer.from(offset, 'base64').toString()))
-								: undefined,
-						};
-						const result = await dynamoDb.send(new ScanCommand(params));
-						// Convert DynamoDB items to PackageMetadata
-						console.log('Result', result);
-						filteredPackages = result.Items
-							? result.Items.map((item) => {
-									const unmarshalledItem = unmarshall(item);
-									// const valueObject = unmarshalledItem.value || {};
-									return {
-										ID: unmarshalledItem?.id.toString() || '',
-										Name: unmarshalledItem.name,
-										Version: unmarshalledItem.version,
-									};
-							  })
-							: [];
-					} else {
-						const exactMatch = /^(\d+\.\d+\.\d+)$/.exec(Version);
-						const boundedRange = /^(\d+\.\d+\.\d+)-(\d+\.\d+\.\d+)$/.exec(Version);
-						const caratRange = /^\^(\d+\.\d+\.\d+)$/.exec(Version);
-						const tildeRange = /^~(\d+\.\d+\.(\d+))$/.exec(Version);
+            if (exactMatch) {
+              const params = {
+                TableName: 'packages', // Replace with your DynamoDB table name
+                FilterExpression: '#n = :name' + (Version ? ' AND #v = :version' : ''),
+                ExpressionAttributeNames: {
+                  '#n': 'name', // Attribute name for 'Name'
+                  ...(Version ? { '#v': 'version' } : {}), // Add 'Version' attribute name if a version is provided
+                },
+                ExpressionAttributeValues: marshall({
+                  ':name': Name,
+                  ...(Version ? { ':version': Version } : {}),
+                }),
+                ExclusiveStartKey: offset ? unmarshall(JSON.parse(Buffer.from(offset, 'base64').toString())) : undefined,
+              };
+              const result = await dynamoDb.send(new ScanCommand(params));
+              // Convert DynamoDB items to PackageMetadata
+              console.log('Result', result);
+              filteredPackages = result.Items
+                ? result.Items.map((item) => {
+                  const unmarshalledItem = unmarshall(item);
+                  // const valueObject = unmarshalledItem.value || {};
+                  return {
+                    ID: unmarshalledItem?.id.toString() || "",
+                    Name: unmarshalledItem.name,
+                    Version: unmarshalledItem.version,
+                  };
+                })
+                : [];
+            } else if (boundedRange) {
+              const params = {
+                TableName: 'packages', // Replace with your DynamoDB table name
+                FilterExpression: '#n = :name' + (Version ? ' AND #v BETWEEN :startVersion AND :endVersion' : ''),
+                ExpressionAttributeNames: {
+                  '#n': 'name', // Attribute name for 'Name'
+                  ...(Version ? { '#v': 'version' } : {}), // Add 'Version' attribute name if a version is provided
+                },
+                ExpressionAttributeValues: marshall({
+                  ':name': Name,
+                  ...(Version ? { ':startVersion': boundedRange[1], ':endVersion': boundedRange[2] } : {}),
+                }),
+                ExclusiveStartKey: offset ? unmarshall(JSON.parse(Buffer.from(offset, 'base64').toString())) : undefined,
+              };
+              const result = await dynamoDb.send(new ScanCommand(params));
+              // Convert DynamoDB items to PackageMetadata
+              console.log('Result', result);
+              filteredPackages = result.Items
+                ? result.Items.map((item) => {
+                  const unmarshalledItem = unmarshall(item);
+                  // const valueObject = unmarshalledItem.value || {};
+                  return {
+                    ID: unmarshalledItem?.id.toString() || "",
+                    Name: unmarshalledItem.name,
+                    Version: unmarshalledItem.version,
+                  };
+                })
+                : [];
+            } else if (caratRange) {
+              const caretMatch = /^\^(\d+)\.(\d+)\.(\d+)$/.exec(Version);
+              const [major, minor, patch] = (caretMatch || []).slice(1).map(Number)
+              const startVersion = `${major}.${minor}.${patch}`
+              const endVersion = `${major + 1}.0.0`
+              const params = {
+                TableName: 'packages', // Replace with your DynamoDB table name
+                FilterExpression: '#n = :name' + (Version ? ' AND #v >= :startVersion AND #v < :endVersion' : ''),
+                ExpressionAttributeNames: {
+                  '#n': 'name', // Attribute name for 'Name'
+                  ...(Version ? { '#v': 'version' } : {}), // Add 'Version' attribute name if a version is provided
+                },
+                ExpressionAttributeValues: marshall({
+                  ':name': Name,
+                  ...(Version ? { ':startVersion': startVersion, ':endVersion': endVersion } : {}),
+                }),
+                ExclusiveStartKey: offset ? unmarshall(JSON.parse(Buffer.from(offset, 'base64').toString())) : undefined,
+              };
+              const result = await dynamoDb.send(new ScanCommand(params));
+              // Convert DynamoDB items to PackageMetadata
+              console.log('Result', result);
+              filteredPackages = result.Items
+                ? result.Items.map((item) => {
+                  const unmarshalledItem = unmarshall(item);
+                  // const valueObject = unmarshalledItem.value || {};
+                  return {
+                    ID: unmarshalledItem?.id.toString() || "",
+                    Name: unmarshalledItem.name,
+                    Version: unmarshalledItem.version,
+                  };
+                })
+                : [];
+            } else if (tildeRange) {
+              const tildeMatch = /^~(\d+)\.(\d+)\.(\d+)$/.exec(Version);
+              const [major, minor, patch] = (tildeMatch || []).slice(1).map(Number)
+              const startVersion = `${major}.${minor}.${patch}`
+              const endVersion = `${major}.${(minor + 1)}.0`
+              const params = {
+                TableName: 'packages', // Replace with your DynamoDB table name
+                FilterExpression: '#n = :name' + (Version ? ' AND #v >= :startVersion AND #v < :endVersion' : ''),
+                ExpressionAttributeNames: {
+                  '#n': 'name', // Attribute name for 'Name'
+                  ...(Version ? { '#v': 'version' } : {}), // Add 'Version' attribute name if a version is provided
+                },
+                ExpressionAttributeValues: marshall({
+                  ':name': Name,
+                  ...(Version ? { ':startVersion': startVersion, ':endVersion': endVersion } : {}),
+                }),
+                ExclusiveStartKey: offset ? unmarshall(JSON.parse(Buffer.from(offset, 'base64').toString())) : undefined,
+              };
+              const result = await dynamoDb.send(new ScanCommand(params));
+              // Convert DynamoDB items to PackageMetadata
+              console.log('Result', result);
+              filteredPackages = result.Items
+                ? result.Items.map((item) => {
+                  const unmarshalledItem = unmarshall(item);
+                  // const valueObject = unmarshalledItem.value || {};
+                  return {
+                    ID: unmarshalledItem?.id.toString() || "",
+                    Name: unmarshalledItem.name,
+                    Version: unmarshalledItem.version,
+                  };
+                })
+                : [];
+            } else {
+              log_response(400, "{ error: 'Incorrect Version Format' }");
+              res.status(400).json({ error: 'Incorrect Version Format' });
+            }
+          }
 
 						if (exactMatch) {
 							const params = {
