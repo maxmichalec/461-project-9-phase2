@@ -60,7 +60,7 @@ export async function metricCalcFromUrl(url: string): Promise<PackageInfo | null
 	//Ramp Up Score
 	const rampupMetric = new RampUp(repoInfo.owner, repoInfo.repo);
 	let rampupMetricScore = await rampupMetric.evaluate();
-	rampupMetricScore += 0.2; 
+	rampupMetricScore += 0.2;
 	//Correctness Score
 	const correctnessMetric = new Correctness(repoInfo.owner, repoInfo.repo);
 	let correctnessMetricScore = await correctnessMetric.evaluate();
@@ -68,9 +68,9 @@ export async function metricCalcFromUrl(url: string): Promise<PackageInfo | null
 	//Bus Factor Score
 	const busFactorMetric = new BusFactor(repoInfo.owner, repoInfo.repo);
 	let busFactorMetricScore = await busFactorMetric.evaluate();
-	busFactorMetricScore += 0.4; 
-	if(busFactorMetricScore > 1) {
-		busFactorMetricScore = 0.9; 
+	busFactorMetricScore += 0.4;
+	if (busFactorMetricScore > 1) {
+		busFactorMetricScore = 0.9;
 	}
 	//Responsiveness Score
 	const responsivenessMetric = new Responsiveness(repoInfo.owner, repoInfo.repo);
