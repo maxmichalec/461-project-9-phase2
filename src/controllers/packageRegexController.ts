@@ -3,84 +3,88 @@
  * Author: Madi Arnold
  * Description: The /package/byRegEx endpoint logic
  */
-import { Request, Response } from 'express';
-import { AuthenticationToken, PackageMetadata, PackageRegEx } from '../types';
-import { dbclient, log_request, log_response } from './controllerHelpers';
-import { ScanCommand } from '@aws-sdk/client-dynamodb';
-import { unmarshall } from '@aws-sdk/util-dynamodb';
+import { Request, Response } from 'express'
+import { AuthenticationToken, PackageMetadata, PackageRegEx } from '../types'
+import { dbclient, log_request, log_response } from './controllerHelpers'
+import { ScanCommand } from '@aws-sdk/client-dynamodb'
+import { unmarshall } from '@aws-sdk/util-dynamodb'
 
 export const postPackageByRegEx = async (req: Request, res: Response) => {
-  try {
-    log_request(req);
-    console.log('Handling /package/byRegEx request');
+	try {
+		log_request(req)
+		console.log('Handling /package/byRegEx request')
 
-    // Verify the X-Authorization header for authentication and permission
-    const authorizationHeader: AuthenticationToken | undefined = Array.isArray(req.headers['x-authorization'])
-      ? req.headers['x-authorization'][0] // Use the first element if it's an array
-      : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
+		// Verify the X-Authorization header for authentication and permission
+		const authorizationHeader: AuthenticationToken | undefined = Array.isArray(
+			req.headers['x-authorization'],
+		)
+			? req.headers['x-authorization'][0] // Use the first element if it's an array
+			: req.headers['x-authorization'] // Use the value directly if it's a string or undefined
 
-    if (!authorizationHeader) {
-      console.error('Authentication token missing or invalid');
-      log_response(400, "{ error: 'Authentication token missing or invalid' }");
-      return res.status(400).json({ error: 'Authentication token missing or invalid' });
-    }
+		if (!authorizationHeader) {
+			console.error('Authentication token missing or invalid')
+			log_response(400, "{ error: 'Authentication token missing or invalid' }")
+			return res.status(400).json({ error: 'Authentication token missing or invalid' })
+		}
 
-    console.log('Authentication token:', authorizationHeader);
-      
-    // Extract the regex from the request body
-    const requestBody: PackageRegEx = req.body;
+		console.log('Authentication token:', authorizationHeader)
 
-    if (!requestBody.RegEx) {
-      console.error('Missing or invalid regex in the request body');
-      log_response(400, "{ error: 'Missing or invalid regex in the request body' }");
-      return res.status(400).json({ error: 'Missing or invalid regex in the request body' });
-    }
+		// Extract the regex from the request body
+		const requestBody: PackageRegEx = req.body
 
-    console.log('Regex from request body:', requestBody.RegEx);
+		if (!requestBody.RegEx) {
+			console.error('Missing or invalid regex in the request body')
+			log_response(400, "{ error: 'Missing or invalid regex in the request body' }")
+			return res.status(400).json({ error: 'Missing or invalid regex in the request body' })
+		}
 
-    // Use DynamoDB to scan for packages matching the regex
-    const scanCommand = new ScanCommand({
-      TableName: 'packages',
-    });
+		console.log('Regex from request body:', requestBody.RegEx)
 
-    console.log('Executing DynamoDB scan');
+		// Use DynamoDB to scan for packages matching the regex
+		const scanCommand = new ScanCommand({
+			TableName: 'packages',
+		})
 
-    const scanResult = await dbclient.send(scanCommand);
+		console.log('Executing DynamoDB scan')
 
-    console.log('DynamoDB scan result:', scanResult);
+		const scanResult = await dbclient.send(scanCommand)
 
-    // Convert DynamoDB items to PackageMetadata
-    const packageHistory: PackageMetadata[] = (scanResult.Items || []).map((item) => {
-      const unmarshalledItem = unmarshall(item);
-      const valueObject = unmarshalledItem.value || {};
+		console.log('DynamoDB scan result:', scanResult)
 
-      return {
-        ID: valueObject.ID, 
-        Name: unmarshalledItem.name,
-        Version: unmarshalledItem.version,
-      };
-    });
+		// Convert DynamoDB items to PackageMetadata
+		const packageHistory: PackageMetadata[] = (scanResult.Items || []).map((item) => {
+			const unmarshalledItem = unmarshall(item)
+			const valueObject = unmarshalledItem.value || {}
 
-    console.log('Converted DynamoDB items:', packageHistory);
+			return {
+				ID: valueObject.ID,
+				Name: unmarshalledItem.name,
+				Version: unmarshalledItem.version,
+			}
+		})
 
-    // Perform additional regex filtering on the client side
-    const regexFilteredPackages = packageHistory.filter((pkg) => new RegExp(requestBody.RegEx).test(pkg.Name));
+		console.log('Converted DynamoDB items:', packageHistory)
 
-    console.log('Packages after regex filtering:', regexFilteredPackages);
+		// Perform additional regex filtering on the client side
+		const regexFilteredPackages = packageHistory.filter((pkg) =>
+			new RegExp(requestBody.RegEx).test(pkg.Name),
+		)
 
-    if (regexFilteredPackages.length === 0) {
-      console.warn('No packages found under this regex');
-      log_response(400, "{ error: 'Authentication token missing or invalid' }");
-      return res.status(404).json({ error: 'No package found under this regex' });
-    }
+		console.log('Packages after regex filtering:', regexFilteredPackages)
 
-    console.log('Returning packages:', regexFilteredPackages);
+		if (regexFilteredPackages.length === 0) {
+			console.warn('No packages found under this regex')
+			log_response(400, "{ error: 'Authentication token missing or invalid' }")
+			return res.status(404).json({ error: 'No package found under this regex' })
+		}
 
-    // Respond with the package history entries
-    log_response(200, JSON.stringify(regexFilteredPackages));
-    res.status(200).json(regexFilteredPackages);
-  } catch (error) {
-    console.error('Error handling /package/byRegEx:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+		console.log('Returning packages:', regexFilteredPackages)
+
+		// Respond with the package history entries
+		log_response(200, JSON.stringify(regexFilteredPackages))
+		res.status(200).json(regexFilteredPackages)
+	} catch (error) {
+		console.error('Error handling /package/byRegEx:', error)
+		res.status(500).json({ error: 'Internal Server Error' })
+	}
+}

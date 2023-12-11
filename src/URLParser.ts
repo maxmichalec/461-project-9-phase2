@@ -1,126 +1,126 @@
-import { readFileSync } from "fs";
-import axios from "axios";
+import { readFileSync } from 'fs'
+import axios from 'axios'
 
 export type GithubRepoInfo = {
-	url: string;
-	owner: string;
-	repo: string;
-};
+	url: string
+	owner: string
+	repo: string
+}
 
 class URLParser {
-	private filePath: string;
+	private filePath: string
 
 	constructor(filePath: string) {
-		this.filePath = filePath;
+		this.filePath = filePath
 	}
 
 	getUrls(): string[] {
-		const fileContent = readFileSync(this.filePath, "utf-8");
+		const fileContent = readFileSync(this.filePath, 'utf-8')
 		const urls = fileContent
-			.split("\n")
+			.split('\n')
 			.map((line) => line.trim())
-			.filter((line) => line.length > 0);
-		return urls;
+			.filter((line) => line.length > 0)
+		return urls
 	}
 
 	async getGithubRepoInfo(): Promise<GithubRepoInfo[]> {
-		const githubUrls = await this.getOnlyGithubUrls();
-		const githubRepoInfo: GithubRepoInfo[] = [];
+		const githubUrls = await this.getOnlyGithubUrls()
+		const githubRepoInfo: GithubRepoInfo[] = []
 		githubUrls.forEach((url) => {
-			const regex = /github\.com\/([^/]+\/[^/]+)/;
-			const match = url.match(regex);
+			const regex = /github\.com\/([^/]+\/[^/]+)/
+			const match = url.match(regex)
 			if (match != null) {
-				const owner = match[1].split("/")[0];
-				let repo = match[1].split("/")[1];
+				const owner = match[1].split('/')[0]
+				let repo = match[1].split('/')[1]
 				// remove .git from repo name
-				if (repo.endsWith(".git")) {
-					repo = repo.slice(0, -4);
+				if (repo.endsWith('.git')) {
+					repo = repo.slice(0, -4)
 				}
-				githubRepoInfo.push({ url, owner, repo });
+				githubRepoInfo.push({ url, owner, repo })
 			}
-		});
-		return githubRepoInfo;
+		})
+		return githubRepoInfo
 	}
 
 	async getGithubRepoInfoFromUrl(url: string): Promise<GithubRepoInfo | null> {
-		let githubLink = url;
-		if (url.includes("npmjs.com")) {
-			const link = await this.getGithubRepoFromNpm(url);
+		let githubLink = url
+		if (url.includes('npmjs.com')) {
+			const link = await this.getGithubRepoFromNpm(url)
 			if (link != null) {
-				githubLink = link;
+				githubLink = link
 			} else {
-				return null;
+				return null
 			}
 		}
-		if (githubLink.includes("github.com")) {
-			const regex = /github\.com\/([^/]+\/[^/]+)/;
-			const match = url.match(regex);
+		if (githubLink.includes('github.com')) {
+			const regex = /github\.com\/([^/]+\/[^/]+)/
+			const match = url.match(regex)
 			if (match != null) {
-				const owner = match[1].split("/")[0];
-				let repo = match[1].split("/")[1];
+				const owner = match[1].split('/')[0]
+				let repo = match[1].split('/')[1]
 				// remove .git from repo name
-				if (repo.endsWith(".git")) {
-					repo = repo.slice(0, -4);
+				if (repo.endsWith('.git')) {
+					repo = repo.slice(0, -4)
 				}
-				return { url, owner, repo };
+				return { url, owner, repo }
 			}
 		}
-		return null;
+		return null
 	}
 
 	async getOnlyGithubUrls(): Promise<string[]> {
-		const allUrls = this.getUrls();
-		const npmUrls = allUrls.filter((url) => url.includes("npmjs.com"));
-		const githubUrls = allUrls.filter((url) => url.includes("github.com"));
+		const allUrls = this.getUrls()
+		const npmUrls = allUrls.filter((url) => url.includes('npmjs.com'))
+		const githubUrls = allUrls.filter((url) => url.includes('github.com'))
 
-		const additionalGithubUrls: string[] = [];
+		const additionalGithubUrls: string[] = []
 
 		for (const npmUrl of npmUrls) {
-			const link = await this.getGithubRepoFromNpm(npmUrl);
+			const link = await this.getGithubRepoFromNpm(npmUrl)
 			if (link != null) {
-				additionalGithubUrls.push(link);
+				additionalGithubUrls.push(link)
 			}
 		}
 
-		return githubUrls.concat(additionalGithubUrls);
+		return githubUrls.concat(additionalGithubUrls)
 	}
 
 	async getGithubRepoFromNpm(npmUrl: string): Promise<string | null> {
-		const packageName = this.extractPackageNameFromNpmLink(npmUrl);
-		let githubLink = null;
+		const packageName = this.extractPackageNameFromNpmLink(npmUrl)
+		let githubLink = null
 		if (packageName != null) {
-			const endpoint = `https://registry.npmjs.org/${packageName}`;
+			const endpoint = `https://registry.npmjs.org/${packageName}`
 			await axios
 				.get(endpoint)
 				.then((res) => {
-					const data = res.data;
+					const data = res.data
 					// console.log(data);
-					let linkEnding = data["repository"]["url"];
-					linkEnding = this.extractGithubRepo(linkEnding);
+					let linkEnding = data['repository']['url']
+					linkEnding = this.extractGithubRepo(linkEnding)
 					if (linkEnding != null) {
-						githubLink = "https://github.com/" + linkEnding;
+						githubLink = 'https://github.com/' + linkEnding
 					}
 				})
 				.catch(() => {
 					console.error(
-						"Error getting github repo from npm link for " + packageName + ".",
-					);
-				});
+						'Error getting github repo from npm link for ' + packageName + '.',
+					)
+				})
 		}
-		return githubLink || null;
+		return githubLink || null
 	}
 
 	extractGithubRepo(url: string): string | null {
-		const regex = /github\.com\/([^/]+\/[^/]+)\.git/;
-		const match = url.match(regex);
-		return match ? match[1] : null;
+		const regex = /github\.com\/([^/]+\/[^/]+)\.git/
+		const match = url.match(regex)
+		return match ? match[1] : null
 	}
 
 	extractPackageNameFromNpmLink(url: string): string | null {
-		const regex = /https:\/\/www\.npmjs\.com\/package\/([^/]+)/;
-		const match = url.match(regex);
-		return match ? match[1] : null;
+		const regex = /https:\/\/www\.npmjs\.com\/package\/([^/]+)/
+		const match = url.match(regex)
+		return match ? match[1] : null
 	}
 }
 
-export default URLParser;
+export default URLParser
