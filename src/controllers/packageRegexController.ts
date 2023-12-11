@@ -63,14 +63,52 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
 
     console.log('Converted DynamoDB items:', packageHistory);
 
-    // Perform additional regex filtering on the client side
-    const regexFilteredPackages = packageHistory.filter((pkg) => new RegExp(requestBody.RegEx).test(pkg.Name));
+    if (packageHistory.length === 0) {
+      console.warn('No packages found under this regex');
+      log_response(404, "{ error: 'No package found under this regex' }");
+      return res.status(404).json({ error: 'No package found under this regex' });
+    }
 
+    const regexObject = new RegExp(requestBody.RegEx);
+    const MAX_EXECUTION_TIME = 1000;
+    
+    async function testRegexWithTimeout(input: string): Promise<boolean> {
+      return Promise.race([
+        regexObject.test(input), // Regular expression test
+        new Promise<boolean>((resolve) =>
+          setTimeout(() => resolve(false), MAX_EXECUTION_TIME)
+        ), // Timeout promise
+      ]);
+    }
+    
+    // Perform additional regex filtering on the client side
+    let timeoutOccurred = false;
+    const regexFilteredPackages: PackageMetadata[] = [];
+    
+    for (const pkg of packageHistory) {
+      const result = await testRegexWithTimeout(pkg.Name);
+    
+      if (!result) {
+        timeoutOccurred = true;
+        break; // Exit the loop if timeout occurs
+      }
+    
+      if (result) {
+        regexFilteredPackages.push(pkg);
+      }
+    }
+    
+    if (timeoutOccurred) {
+      console.error('Regex test exceeded the maximum execution time');
+      log_response(500, "{ error: 'Regex test exceeded the maximum execution time' }");
+      return res.status(500).json({ error: 'Regex test exceeded the maximum execution time' });
+    }
+    
     console.log('Packages after regex filtering:', regexFilteredPackages);
 
     if (regexFilteredPackages.length === 0) {
       console.warn('No packages found under this regex');
-      log_response(400, "{ error: 'Authentication token missing or invalid' }");
+      log_response(404, "{ error: 'No package found under this regex' }");
       return res.status(404).json({ error: 'No package found under this regex' });
     }
 
