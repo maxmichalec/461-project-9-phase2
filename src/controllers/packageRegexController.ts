@@ -63,6 +63,12 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
 
     console.log('Converted DynamoDB items:', packageHistory);
 
+    if (packageHistory.length === 0) {
+      console.warn('No packages found under this regex');
+      log_response(404, "{ error: 'No package found under this regex' }");
+      return res.status(404).json({ error: 'No package found under this regex' });
+    }
+
     const regexObject = new RegExp(requestBody.RegEx);
     const MAX_EXECUTION_TIME = 1000;
     
