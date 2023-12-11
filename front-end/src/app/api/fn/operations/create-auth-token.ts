@@ -1,16 +1,16 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http'
-import { Observable } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
-import { StrictHttpResponse } from '../../strict-http-response'
-import { RequestBuilder } from '../../request-builder'
+import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { StrictHttpResponse } from '../../strict-http-response';
+import { RequestBuilder } from '../../request-builder';
 
-import { AuthenticationRequest } from '../../models/authentication-request'
-import { AuthenticationToken } from '../../models/authentication-token'
+import { AuthenticationRequest } from '../../models/authentication-request';
+import { AuthenticationToken } from '../../models/authentication-token';
 
 export interface CreateAuthToken$Params {
-	body: AuthenticationRequest
+	body: AuthenticationRequest;
 }
 
 export function createAuthToken(
@@ -19,9 +19,9 @@ export function createAuthToken(
 	params: CreateAuthToken$Params,
 	context?: HttpContext,
 ): Observable<StrictHttpResponse<AuthenticationToken>> {
-	const rb = new RequestBuilder(rootUrl, createAuthToken.PATH, 'put')
+	const rb = new RequestBuilder(rootUrl, createAuthToken.PATH, 'put');
 	if (params) {
-		rb.body(params.body, 'application/json')
+		rb.body(params.body, 'application/json');
 	}
 
 	return http
@@ -29,9 +29,9 @@ export function createAuthToken(
 		.pipe(
 			filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
 			map((r: HttpResponse<any>) => {
-				return r as StrictHttpResponse<AuthenticationToken>
+				return r as StrictHttpResponse<AuthenticationToken>;
 			}),
-		)
+		);
 }
 
-createAuthToken.PATH = '/authenticate'
+createAuthToken.PATH = '/authenticate';

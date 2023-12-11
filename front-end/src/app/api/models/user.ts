@@ -4,6 +4,6 @@ export interface User {
 	/**
 	 * Is this user an admin?
 	 */
-	isAdmin: boolean
-	name: string
+	isAdmin: boolean;
+	name: string;
 }

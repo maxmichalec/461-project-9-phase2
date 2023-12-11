@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { ApiConfiguration, ApiConfigurationParams } from './api-configuration'
+import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { ApiService } from './services/api.service'
+import { ApiService } from './services/api.service';
 
 /**
  * Module that provides all services and configuration.
@@ -25,7 +25,7 @@ export class ApiModule {
 					useValue: params,
 				},
 			],
-		}
+		};
 	}
 	/*
   constructor( 

@@ -4,4 +4,4 @@
 /**
  * Offset in pagination.
  */
-export type EnumerateOffset = string
+export type EnumerateOffset = string;

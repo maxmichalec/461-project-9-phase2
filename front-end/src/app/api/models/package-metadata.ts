@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
-import { PackageId } from '../models/package-id'
-import { PackageName } from '../models/package-name'
+import { PackageId } from '../models/package-id';
+import { PackageName } from '../models/package-name';
 
 /**
  * The "Name" and "Version" are used as a unique identifier pair when uploading a package.
@@ -12,15 +12,15 @@ export interface PackageMetadata {
 	/**
 	 * Unique ID for use with the /package/{id} endpoint.
 	 */
-	ID: PackageId
+	ID: PackageId;
 
 	/**
 	 * Package name
 	 */
-	Name: PackageName
+	Name: PackageName;
 
 	/**
 	 * Package version
 	 */
-	Version: string
+	Version: string;
 }

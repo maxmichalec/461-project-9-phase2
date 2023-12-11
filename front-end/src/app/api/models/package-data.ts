@@ -15,15 +15,15 @@ export interface PackageData {
 	 *
 	 * See https://docs.npmjs.com/cli/v7/configuring-npm/package-json#homepage.
 	 */
-	Content?: string
+	Content?: string;
 
 	/**
 	 * A JavaScript program (for use with sensitive modules).
 	 */
-	JSProgram?: string
+	JSProgram?: string;
 
 	/**
 	 * Package URL (for use in public ingest).
 	 */
-	URL?: string
+	URL?: string;
 }

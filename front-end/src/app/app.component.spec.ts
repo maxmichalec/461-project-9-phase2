@@ -3,43 +3,43 @@
  * Author: Caroline Gilbert
  * Description: Unit tests for the app endpoint for the front-end
  */
-import { RouterTestingModule } from '@angular/router/testing'
-import { AppComponent } from './app.component'
-import { HomeModule } from './home/home.module'
-import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { ApiService } from './api/services'
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppComponent } from './app.component';
+import { HomeModule } from './home/home.module';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { ApiService } from './api/services';
 
 describe('AppComponent', () => {
-	let fixture: ComponentFixture<AppComponent>
-	let httpTestingController: HttpTestingController
+	let fixture: ComponentFixture<AppComponent>;
+	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [RouterTestingModule, HttpClientTestingModule, HomeModule],
 			declarations: [AppComponent],
 			providers: [{ provide: ApiService }],
-		}).compileComponents()
+		}).compileComponents();
 
-		fixture = TestBed.createComponent(AppComponent)
-		fixture.detectChanges()
-		httpTestingController = TestBed.inject(HttpTestingController)
-	})
+		fixture = TestBed.createComponent(AppComponent);
+		fixture.detectChanges();
+		httpTestingController = TestBed.inject(HttpTestingController);
+	});
 
 	afterEach(() => {
-		httpTestingController.verify()
-	})
+		httpTestingController.verify();
+	});
 
 	it('should create the app', () => {
-		const fixture = TestBed.createComponent(AppComponent)
-		const app = fixture.componentInstance
-		expect(app).toBeTruthy()
-	})
+		const fixture = TestBed.createComponent(AppComponent);
+		const app = fixture.componentInstance;
+		expect(app).toBeTruthy();
+	});
 
 	it(`should have as title 'Package Registry'`, () => {
-		const fixture = TestBed.createComponent(AppComponent)
-		const app = fixture.componentInstance
-		const expectedTitle = 'Package Registry'
-		expect(app.title).toEqual(expectedTitle)
-	})
-})
+		const fixture = TestBed.createComponent(AppComponent);
+		const app = fixture.componentInstance;
+		const expectedTitle = 'Package Registry';
+		expect(app.title).toEqual(expectedTitle);
+	});
+});

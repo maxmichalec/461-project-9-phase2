@@ -1,50 +1,50 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpClient, HttpContext } from '@angular/common/http'
-import { Injectable } from '@angular/core'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { HttpClient, HttpContext } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { BaseService } from '../base-service'
-import { ApiConfiguration } from '../api-configuration'
-import { StrictHttpResponse } from '../strict-http-response'
+import { BaseService } from '../base-service';
+import { ApiConfiguration } from '../api-configuration';
+import { StrictHttpResponse } from '../strict-http-response';
 
-import { AuthenticationToken } from '../models/authentication-token'
-import { createAuthToken } from '../fn/operations/create-auth-token'
-import { CreateAuthToken$Params } from '../fn/operations/create-auth-token'
-import { Package } from '../models/package'
-import { packageByNameDelete } from '../fn/operations/package-by-name-delete'
-import { PackageByNameDelete$Params } from '../fn/operations/package-by-name-delete'
-import { packageByNameGet } from '../fn/operations/package-by-name-get'
-import { PackageByNameGet$Params } from '../fn/operations/package-by-name-get'
-import { packageByRegExGet } from '../fn/operations/package-by-reg-ex-get'
-import { PackageByRegExGet$Params } from '../fn/operations/package-by-reg-ex-get'
-import { packageCreate } from '../fn/operations/package-create'
-import { PackageCreate$Params } from '../fn/operations/package-create'
-import { packageDelete } from '../fn/operations/package-delete'
-import { PackageDelete$Params } from '../fn/operations/package-delete'
-import { PackageHistoryEntry } from '../models/package-history-entry'
-import { PackageMetadata } from '../models/package-metadata'
-import { packageRate } from '../fn/operations/package-rate'
-import { PackageRate$Params } from '../fn/operations/package-rate'
-import { PackageRating } from '../models/package-rating'
-import { packageRetrieve } from '../fn/operations/package-retrieve'
-import { PackageRetrieve$Params } from '../fn/operations/package-retrieve'
-import { packagesList } from '../fn/operations/packages-list'
-import { PackagesList$Params } from '../fn/operations/packages-list'
-import { packageUpdate } from '../fn/operations/package-update'
-import { PackageUpdate$Params } from '../fn/operations/package-update'
-import { registryReset } from '../fn/operations/registry-reset'
-import { RegistryReset$Params } from '../fn/operations/registry-reset'
+import { AuthenticationToken } from '../models/authentication-token';
+import { createAuthToken } from '../fn/operations/create-auth-token';
+import { CreateAuthToken$Params } from '../fn/operations/create-auth-token';
+import { Package } from '../models/package';
+import { packageByNameDelete } from '../fn/operations/package-by-name-delete';
+import { PackageByNameDelete$Params } from '../fn/operations/package-by-name-delete';
+import { packageByNameGet } from '../fn/operations/package-by-name-get';
+import { PackageByNameGet$Params } from '../fn/operations/package-by-name-get';
+import { packageByRegExGet } from '../fn/operations/package-by-reg-ex-get';
+import { PackageByRegExGet$Params } from '../fn/operations/package-by-reg-ex-get';
+import { packageCreate } from '../fn/operations/package-create';
+import { PackageCreate$Params } from '../fn/operations/package-create';
+import { packageDelete } from '../fn/operations/package-delete';
+import { PackageDelete$Params } from '../fn/operations/package-delete';
+import { PackageHistoryEntry } from '../models/package-history-entry';
+import { PackageMetadata } from '../models/package-metadata';
+import { packageRate } from '../fn/operations/package-rate';
+import { PackageRate$Params } from '../fn/operations/package-rate';
+import { PackageRating } from '../models/package-rating';
+import { packageRetrieve } from '../fn/operations/package-retrieve';
+import { PackageRetrieve$Params } from '../fn/operations/package-retrieve';
+import { packagesList } from '../fn/operations/packages-list';
+import { PackagesList$Params } from '../fn/operations/packages-list';
+import { packageUpdate } from '../fn/operations/package-update';
+import { PackageUpdate$Params } from '../fn/operations/package-update';
+import { registryReset } from '../fn/operations/registry-reset';
+import { RegistryReset$Params } from '../fn/operations/registry-reset';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService extends BaseService {
 	constructor(config: ApiConfiguration, http: HttpClient) {
-		super(config, http)
+		super(config, http);
 	}
 
 	/** Path part for operation `packagesList()` */
-	static readonly PackagesListPath = '/packages'
+	static readonly PackagesListPath = '/packages';
 
 	/**
 	 * Get the packages from the registry.
@@ -65,7 +65,7 @@ export class ApiService extends BaseService {
 		params: PackagesList$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<Array<PackageMetadata>>> {
-		return packagesList(this.http, this.rootUrl, params, context)
+		return packagesList(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -89,11 +89,11 @@ export class ApiService extends BaseService {
 	): Observable<Array<PackageMetadata>> {
 		return this.packagesList$Response(params, context).pipe(
 			map((r: StrictHttpResponse<Array<PackageMetadata>>): Array<PackageMetadata> => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `registryReset()` */
-	static readonly RegistryResetPath = '/reset'
+	static readonly RegistryResetPath = '/reset';
 
 	/**
 	 * Reset the registry.
@@ -109,7 +109,7 @@ export class ApiService extends BaseService {
 		params: RegistryReset$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<void>> {
-		return registryReset(this.http, this.rootUrl, params, context)
+		return registryReset(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -125,11 +125,11 @@ export class ApiService extends BaseService {
 	registryReset(params: RegistryReset$Params, context?: HttpContext): Observable<void> {
 		return this.registryReset$Response(params, context).pipe(
 			map((r: StrictHttpResponse<void>): void => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `packageRetrieve()` */
-	static readonly PackageRetrievePath = '/package/{id}'
+	static readonly PackageRetrievePath = '/package/{id}';
 
 	/**
 	 * Interact with the package with this ID.
@@ -145,7 +145,7 @@ export class ApiService extends BaseService {
 		params: PackageRetrieve$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<Package>> {
-		return packageRetrieve(this.http, this.rootUrl, params, context)
+		return packageRetrieve(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -161,11 +161,11 @@ export class ApiService extends BaseService {
 	packageRetrieve(params: PackageRetrieve$Params, context?: HttpContext): Observable<Package> {
 		return this.packageRetrieve$Response(params, context).pipe(
 			map((r: StrictHttpResponse<Package>): Package => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `packageUpdate()` */
-	static readonly PackageUpdatePath = '/package/{id}'
+	static readonly PackageUpdatePath = '/package/{id}';
 
 	/**
 	 * Update this content of the package.
@@ -183,7 +183,7 @@ export class ApiService extends BaseService {
 		params: PackageUpdate$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<void>> {
-		return packageUpdate(this.http, this.rootUrl, params, context)
+		return packageUpdate(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -201,11 +201,11 @@ export class ApiService extends BaseService {
 	packageUpdate(params: PackageUpdate$Params, context?: HttpContext): Observable<void> {
 		return this.packageUpdate$Response(params, context).pipe(
 			map((r: StrictHttpResponse<void>): void => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `packageDelete()` */
-	static readonly PackageDeletePath = '/package/{id}'
+	static readonly PackageDeletePath = '/package/{id}';
 
 	/**
 	 * Delete this version of the package.
@@ -221,7 +221,7 @@ export class ApiService extends BaseService {
 		params: PackageDelete$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<void>> {
-		return packageDelete(this.http, this.rootUrl, params, context)
+		return packageDelete(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -237,11 +237,11 @@ export class ApiService extends BaseService {
 	packageDelete(params: PackageDelete$Params, context?: HttpContext): Observable<void> {
 		return this.packageDelete$Response(params, context).pipe(
 			map((r: StrictHttpResponse<void>): void => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `packageCreate()` */
-	static readonly PackageCreatePath = '/package'
+	static readonly PackageCreatePath = '/package';
 
 	/**
 	 * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -253,7 +253,7 @@ export class ApiService extends BaseService {
 		params: PackageCreate$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<Package>> {
-		return packageCreate(this.http, this.rootUrl, params, context)
+		return packageCreate(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -265,11 +265,11 @@ export class ApiService extends BaseService {
 	packageCreate(params: PackageCreate$Params, context?: HttpContext): Observable<Package> {
 		return this.packageCreate$Response(params, context).pipe(
 			map((r: StrictHttpResponse<Package>): Package => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `packageRate()` */
-	static readonly PackageRatePath = '/package/{id}/rate'
+	static readonly PackageRatePath = '/package/{id}/rate';
 
 	/**
 	 * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -281,7 +281,7 @@ export class ApiService extends BaseService {
 		params: PackageRate$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<PackageRating>> {
-		return packageRate(this.http, this.rootUrl, params, context)
+		return packageRate(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -293,11 +293,11 @@ export class ApiService extends BaseService {
 	packageRate(params: PackageRate$Params, context?: HttpContext): Observable<PackageRating> {
 		return this.packageRate$Response(params, context).pipe(
 			map((r: StrictHttpResponse<PackageRating>): PackageRating => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `createAuthToken()` */
-	static readonly CreateAuthTokenPath = '/authenticate'
+	static readonly CreateAuthTokenPath = '/authenticate';
 
 	/**
 	 * Create an access token.
@@ -311,7 +311,7 @@ export class ApiService extends BaseService {
 		params: CreateAuthToken$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<AuthenticationToken>> {
-		return createAuthToken(this.http, this.rootUrl, params, context)
+		return createAuthToken(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -328,11 +328,11 @@ export class ApiService extends BaseService {
 	): Observable<AuthenticationToken> {
 		return this.createAuthToken$Response(params, context).pipe(
 			map((r: StrictHttpResponse<AuthenticationToken>): AuthenticationToken => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `packageByNameGet()` */
-	static readonly PackageByNameGetPath = '/package/byName/{name}'
+	static readonly PackageByNameGetPath = '/package/byName/{name}';
 
 	/**
 	 * Return the history of this package (all versions).
@@ -346,7 +346,7 @@ export class ApiService extends BaseService {
 		params: PackageByNameGet$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<Array<PackageHistoryEntry>>> {
-		return packageByNameGet(this.http, this.rootUrl, params, context)
+		return packageByNameGet(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -366,11 +366,11 @@ export class ApiService extends BaseService {
 				(r: StrictHttpResponse<Array<PackageHistoryEntry>>): Array<PackageHistoryEntry> =>
 					r.body,
 			),
-		)
+		);
 	}
 
 	/** Path part for operation `packageByNameDelete()` */
-	static readonly PackageByNameDeletePath = '/package/byName/{name}'
+	static readonly PackageByNameDeletePath = '/package/byName/{name}';
 
 	/**
 	 * Delete all versions of this package.
@@ -386,7 +386,7 @@ export class ApiService extends BaseService {
 		params: PackageByNameDelete$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<void>> {
-		return packageByNameDelete(this.http, this.rootUrl, params, context)
+		return packageByNameDelete(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -405,11 +405,11 @@ export class ApiService extends BaseService {
 	): Observable<void> {
 		return this.packageByNameDelete$Response(params, context).pipe(
 			map((r: StrictHttpResponse<void>): void => r.body),
-		)
+		);
 	}
 
 	/** Path part for operation `packageByRegExGet()` */
-	static readonly PackageByRegExGetPath = '/package/byRegEx'
+	static readonly PackageByRegExGetPath = '/package/byRegEx';
 
 	/**
 	 * Get any packages fitting the regular expression.
@@ -426,7 +426,7 @@ export class ApiService extends BaseService {
 		params: PackageByRegExGet$Params,
 		context?: HttpContext,
 	): Observable<StrictHttpResponse<Array<PackageMetadata>>> {
-		return packageByRegExGet(this.http, this.rootUrl, params, context)
+		return packageByRegExGet(this.http, this.rootUrl, params, context);
 	}
 
 	/**
@@ -446,8 +446,8 @@ export class ApiService extends BaseService {
 	): Observable<Array<PackageMetadata>> {
 		return this.packageByRegExGet$Response(params, context).pipe(
 			map((r: StrictHttpResponse<Array<PackageMetadata>>): Array<PackageMetadata> => r.body),
-		)
+		);
 	}
 }
 
-export { packagesList }
+export { packagesList };

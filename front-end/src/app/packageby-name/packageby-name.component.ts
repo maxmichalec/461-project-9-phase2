@@ -3,9 +3,9 @@
  * Author: Madi Arnold
  * Description: The logic for the package/byName endpoint for the front-end
  */
-import { Component } from '@angular/core'
-import { ApiService } from '../api/services'
-import { AuthenticationToken, PackageHistoryEntry, PackageName } from '../api/models'
+import { Component } from '@angular/core';
+import { ApiService } from '../api/services';
+import { AuthenticationToken, PackageHistoryEntry, PackageName } from '../api/models';
 
 @Component({
 	selector: 'app-packageby-name',
@@ -13,10 +13,10 @@ import { AuthenticationToken, PackageHistoryEntry, PackageName } from '../api/mo
 	styleUrls: ['./packageby-name.component.css'],
 })
 export class PackagebyNameComponent {
-	authHeader: AuthenticationToken = 'YOUR_AUTH_TOKEN_HERE'
-	packageName: PackageName = '' //Input from user;
-	packageHistory: PackageHistoryEntry[] = [] //Response from the backend
-	deletePackageResponse = ''
+	authHeader: AuthenticationToken = 'YOUR_AUTH_TOKEN_HERE';
+	packageName: PackageName = ''; //Input from user;
+	packageHistory: PackageHistoryEntry[] = []; //Response from the backend
+	deletePackageResponse = '';
 
 	constructor(private apiService: ApiService) {}
 
@@ -25,14 +25,14 @@ export class PackagebyNameComponent {
 			.packageByNameGet({ 'X-Authorization': this.authHeader, name: this.packageName })
 			.subscribe(
 				(response) => {
-					this.packageHistory = response
-					console.log('Get package history successful', response)
+					this.packageHistory = response;
+					console.log('Get package history successful', response);
 				},
 				(error) => {
-					this.packageHistory = []
-					console.log('Error retrieving pacakge:', error)
+					this.packageHistory = [];
+					console.log('Error retrieving pacakge:', error);
 				},
-			)
+			);
 	}
 
 	deletePackage() {
@@ -40,17 +40,17 @@ export class PackagebyNameComponent {
 			.packageByNameDelete({ 'X-Authorization': this.authHeader, name: this.packageName })
 			.subscribe(
 				(response) => {
-					this.deletePackageResponse = 'Package deletion successful'
-					console.log('Delete Package was successful', response)
+					this.deletePackageResponse = 'Package deletion successful';
+					console.log('Delete Package was successful', response);
 				},
 				(error) => {
-					this.deletePackageResponse = 'Package deletion unsuccessful'
-					console.log('Delete Package was unsuccessful', error)
+					this.deletePackageResponse = 'Package deletion unsuccessful';
+					console.log('Delete Package was unsuccessful', error);
 				},
-			)
+			);
 
 		setTimeout(() => {
-			this.deletePackageResponse = ''
-		}, 2000)
+			this.deletePackageResponse = '';
+		}, 2000);
 	}
 }

@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core'
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
 	name: 'filterOutContentField',
@@ -10,10 +10,10 @@ export class FilterOutContentFieldPipe implements PipeTransform {
 			const {
 				data,
 				metadata: { ...rest },
-			} = value
-			const { Content, ...restData } = data
-			return { data: restData, metadata: rest }
+			} = value;
+			const { Content, ...restData } = data;
+			return { data: restData, metadata: rest };
 		}
-		return value
+		return value;
 	}
 }

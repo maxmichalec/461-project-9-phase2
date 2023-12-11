@@ -1,3 +1,3 @@
 /* tslint:disable */
 /* eslint-disable */
-export type PackageId = string
+export type PackageId = string;

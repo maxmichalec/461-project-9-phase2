@@ -1,3 +1,3 @@
 /* tslint:disable */
 /* eslint-disable */
-export type SemverRange = string
+export type SemverRange = string;

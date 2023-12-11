@@ -5,44 +5,44 @@
  * Author: Caroline Gilbert
  * Description: Unit tests for the reset endpoint for the front-end
  */
-import { TestBed, ComponentFixture } from '@angular/core/testing'
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { of, throwError } from 'rxjs'
-import { ResetComponent } from './reset.component'
-import { ApiService } from '../api/services'
-import { StrictHttpResponse } from '../api/strict-http-response'
-import { HttpResponse } from '@angular/common/http'
-import { testURL } from '../test-config'
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { of, throwError } from 'rxjs';
+import { ResetComponent } from './reset.component';
+import { ApiService } from '../api/services';
+import { StrictHttpResponse } from '../api/strict-http-response';
+import { HttpResponse } from '@angular/common/http';
+import { testURL } from '../test-config';
 
 describe('ResetComponent', () => {
-	let component: ResetComponent
-	let fixture: ComponentFixture<ResetComponent>
-	let apiService: ApiService
-	let httpTestingController: HttpTestingController
+	let component: ResetComponent;
+	let fixture: ComponentFixture<ResetComponent>;
+	let apiService: ApiService;
+	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			declarations: [ResetComponent],
 			imports: [HttpClientTestingModule],
 			providers: [{ provide: ApiService }],
-		}).compileComponents()
+		}).compileComponents();
 
-		fixture = TestBed.createComponent(ResetComponent)
-		component = fixture.componentInstance
-		fixture.detectChanges()
-		apiService = TestBed.inject(ApiService)
-		httpTestingController = TestBed.inject(HttpTestingController)
-	})
+		fixture = TestBed.createComponent(ResetComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		apiService = TestBed.inject(ApiService);
+		httpTestingController = TestBed.inject(HttpTestingController);
+	});
 
 	afterEach(() => {
-		httpTestingController.verify()
-	})
+		httpTestingController.verify();
+	});
 
 	// Initial Test Case: Reset Component Created
 	it('should create', () => {
-		expect(component).toBeTruthy()
-		expect(component.resetMessage).toEqual('')
-	})
+		expect(component).toBeTruthy();
+		expect(component.resetMessage).toEqual('');
+	});
 
 	// Positive Test Case: Reset System Successfully
 	it('should reset application on valid query', () => {
@@ -55,19 +55,19 @@ describe('ResetComponent', () => {
 			statusText: 'OK',
 			url: `${testURL}reset`,
 			ok: true,
-		}
+		};
 
-		spyOn(apiService, 'registryReset$Response').and.returnValue(of(mockResponse))
+		spyOn(apiService, 'registryReset$Response').and.returnValue(of(mockResponse));
 
-		component.onSubmit()
+		component.onSubmit();
 
-		expect(apiService.registryReset$Response).toHaveBeenCalled()
+		expect(apiService.registryReset$Response).toHaveBeenCalled();
 		expect(apiService.registryReset$Response).toHaveBeenCalledWith(
 			{ 'X-Authorization': component.authHeader },
 			undefined,
-		)
-		expect(component.resetMessage).toEqual('Application reset successful.')
-	})
+		);
+		expect(component.resetMessage).toEqual('Application reset successful.');
+	});
 
 	// Negative Test Case: Reset System Unsuccessfully
 	it('should not reset application on invalid query', () => {
@@ -80,32 +80,32 @@ describe('ResetComponent', () => {
 			statusText: 'Bad Request',
 			url: `${testURL}reset`,
 			ok: false,
-		}
+		};
 
 		spyOn(apiService, 'registryReset$Response').and.returnValue(
 			throwError({ error: mockErrorResponse }),
-		)
+		);
 
-		component.onSubmit()
+		component.onSubmit();
 
-		expect(apiService.registryReset$Response).toHaveBeenCalled()
+		expect(apiService.registryReset$Response).toHaveBeenCalled();
 		expect(apiService.registryReset$Response).toHaveBeenCalledWith(
 			{ 'X-Authorization': component.authHeader },
 			undefined,
-		)
-		expect(component.resetMessage).toEqual('Error reseting application.')
-	})
+		);
+		expect(component.resetMessage).toEqual('Error reseting application.');
+	});
 
 	//
 	// Redundant tests to ensure 100% coverage and try different ways to test
 	//
 	it('should call apiService.registryReset on submit', () => {
-		spyOn(apiService, 'registryReset').and.returnValue(of())
-		component.onSubmit()
+		spyOn(apiService, 'registryReset').and.returnValue(of());
+		component.onSubmit();
 		expect(apiService.registryReset).toHaveBeenCalledWith({
 			'X-Authorization': component.authHeader,
-		})
-	})
+		});
+	});
 
 	it('should handle well-formed API query to /reset with 200 response', () => {
 		// Arrange
@@ -118,18 +118,18 @@ describe('ResetComponent', () => {
 			statusText: null as any,
 			url: null as any,
 			ok: true,
-		}
+		};
 
 		// Spy on the actual method
-		spyOn(apiService, 'registryReset$Response').and.returnValue(of(responseMock))
+		spyOn(apiService, 'registryReset$Response').and.returnValue(of(responseMock));
 
 		// Act
-		component.onSubmit()
+		component.onSubmit();
 
 		// Assert
-		expect(apiService.registryReset$Response).toHaveBeenCalled()
-		expect(component.resetMessage).toEqual('Application reset successful.')
-	})
+		expect(apiService.registryReset$Response).toHaveBeenCalled();
+		expect(component.resetMessage).toEqual('Application reset successful.');
+	});
 
 	it('Should handle well-formed API query', () => {
 		const expectedResponse: HttpResponse<void> = {
@@ -141,45 +141,45 @@ describe('ResetComponent', () => {
 			type: 4,
 			body: null as any,
 			clone: null as any,
-		}
+		};
 
 		apiService
 			.registryReset$Response({ 'X-Authorization': component.authHeader })
 			.subscribe((response: StrictHttpResponse<void>) => {
 				// console.log('expectedResponse: ', expectedResponse);
-				expect(response.status).toEqual(expectedResponse.status)
-			})
+				expect(response.status).toEqual(expectedResponse.status);
+			});
 
-		const req = httpTestingController.expectOne(`${testURL}reset`)
-		req.flush(expectedResponse)
-	})
+		const req = httpTestingController.expectOne(`${testURL}reset`);
+		req.flush(expectedResponse);
+	});
 
 	it('Should handle mal-formed API query', () => {
-		component.onSubmit()
+		component.onSubmit();
 
-		const req = httpTestingController.expectOne(`${testURL}reset`)
-		req.flush(null, { status: 400, statusText: 'Bad Request' })
-		expect(component.resetMessage).toEqual('Error reseting application.')
-		console.log('component.resetMessage: ', component.resetMessage)
-	})
+		const req = httpTestingController.expectOne(`${testURL}reset`);
+		req.flush(null, { status: 400, statusText: 'Bad Request' });
+		expect(component.resetMessage).toEqual('Error reseting application.');
+		console.log('component.resetMessage: ', component.resetMessage);
+	});
 
 	it('Should handle API query with no auth header', () => {
-		component.authHeader = ''
-		component.onSubmit()
+		component.authHeader = '';
+		component.onSubmit();
 
-		const req = httpTestingController.expectOne(`${testURL}reset`)
-		req.flush(null, { status: 400, statusText: 'Unauthorized' })
-		expect(component.resetMessage).toEqual('Error reseting application.')
-		console.log('component.resetMessage for no auth: ', component.resetMessage)
-	})
+		const req = httpTestingController.expectOne(`${testURL}reset`);
+		req.flush(null, { status: 400, statusText: 'Unauthorized' });
+		expect(component.resetMessage).toEqual('Error reseting application.');
+		console.log('component.resetMessage for no auth: ', component.resetMessage);
+	});
 
 	it('Should handle API with correct auth header', () => {
-		component.authHeader = 'X-Authorization'
-		component.onSubmit()
+		component.authHeader = 'X-Authorization';
+		component.onSubmit();
 
-		const req = httpTestingController.expectOne(`${testURL}reset`)
-		req.flush(null, { status: 200, statusText: 'OK' })
-		expect(component.resetMessage).toEqual('Application reset successful.')
-		console.log('component.resetMessage for correct auth: ', component.resetMessage)
-	})
-})
+		const req = httpTestingController.expectOne(`${testURL}reset`);
+		req.flush(null, { status: 200, statusText: 'OK' });
+		expect(component.resetMessage).toEqual('Application reset successful.');
+		console.log('component.resetMessage for correct auth: ', component.resetMessage);
+	});
+});

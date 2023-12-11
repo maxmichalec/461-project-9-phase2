@@ -1,11 +1,11 @@
-import 'dotenv/config' // loads .env file into process.env. NOTE: this should be the first line
-import { Logger } from 'tslog'
-import { appendFileSync } from 'fs'
+import 'dotenv/config'; // loads .env file into process.env. NOTE: this should be the first line
+import { Logger } from 'tslog';
+import { appendFileSync } from 'fs';
 
 export const log = new Logger({
 	name: 'Logger',
 	minLevel: 7,
-}) // no messages by default
+}); // no messages by default
 
 // if (process.env.LOG_LEVEL === "1") {
 // 	// only log.info, log.warn, log.error, and log.fatal
@@ -15,7 +15,7 @@ export const log = new Logger({
 // 	log.settings.minLevel = 0;
 // }
 
-log.settings.minLevel = 0
+log.settings.minLevel = 0;
 
 // Set output file
 log.attachTransport((logObj) => {
@@ -25,7 +25,7 @@ log.attachTransport((logObj) => {
 	// 	process.exit(1);
 	// }
 	// appendFileSync(process.env.LOG_FILE, JSON.stringify(logObj) + "\n");
-	appendFileSync('/app/log.txt', JSON.stringify(logObj) + '\n')
+	appendFileSync('/app/log.txt', JSON.stringify(logObj) + '\n');
 	// Log to file in format: [2021-03-31T21:00:00.000Z] [INFO] Logger: Hello World
 	// appendFileSync(
 	// 	process.env.LOG_FILE,
@@ -33,4 +33,4 @@ log.attachTransport((logObj) => {
 	// 		" "
 	// 	)}\n`
 	// );
-})
+});

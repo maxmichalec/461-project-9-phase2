@@ -4,4 +4,4 @@ module.exports = {
 	setupFiles: ['dotenv/config'],
 	collectCoverage: true,
 	testTimeout: 20000,
-}
+};
