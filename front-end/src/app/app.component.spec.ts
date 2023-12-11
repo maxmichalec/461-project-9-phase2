@@ -12,9 +12,7 @@ import { ApiService } from "./api/services";
 
 
 describe('AppComponent', () => {
-  let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
-  let apiService: ApiService;
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
@@ -27,9 +25,7 @@ describe('AppComponent', () => {
   }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
-    apiService = TestBed.inject(ApiService);
     httpTestingController = TestBed.inject(HttpTestingController);
 });
 
