@@ -1,3 +1,5 @@
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 /*
  * File: reset.component.spec.ts
  * Author: Caroline Gilbert
