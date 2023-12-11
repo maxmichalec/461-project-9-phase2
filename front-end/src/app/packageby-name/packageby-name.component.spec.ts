@@ -11,6 +11,7 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { PackageHistoryEntry } from '../api/models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { testURL } from '../test-config';
 
 
 describe('PackagebyNameComponent', () => {
@@ -60,7 +61,7 @@ describe('PackagebyNameComponent', () => {
   
       // Expect a single request to a specific URL with specific headers and parameters
       const req = backend.expectOne({
-        url: 'http://localhost:9000/package/byName/',
+        url: `${testURL}package/byName/`,
         method: 'GET',
       });
   
@@ -86,7 +87,7 @@ describe('PackagebyNameComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and parameters
       const req = httpTestingController.expectOne({
-        url: 'http://localhost:9000/package/byName/',
+        url: `${testURL}package/byName/`,
         method: 'GET',
       });
 
@@ -106,7 +107,7 @@ describe('PackagebyNameComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and parameters
       const req = httpTestingController.expectOne({
-        url: 'http://localhost:9000/package/byName/',
+        url: `${testURL}package/byName/`,
         method: 'GET',
       });
 

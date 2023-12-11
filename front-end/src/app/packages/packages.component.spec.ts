@@ -11,6 +11,7 @@ import { ApiService } from "../api/services";
 import { PackageMetadata } from '../api/models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { testURL } from '../test-config';
 
 describe('PackagesComponent', () => {
   let component: PackagesComponent;
@@ -89,7 +90,7 @@ describe('PackagesComponent', () => {
 
       // Expect a single request to a specific URL
       const req = backend.expectOne({
-        url: 'http://localhost:9000/packages?offset=',
+        url: `${testURL}packages?offset=`,
         method: 'POST',
       });
 
@@ -119,7 +120,7 @@ describe('PackagesComponent', () => {
 
       // Expect a single request to a specific URL
       const req = backend.expectOne({
-        url: 'http://localhost:9000/packages?offset=',
+        url: `${testURL}packages?offset=`,
         method: 'POST',
       });
 
@@ -149,7 +150,7 @@ describe('PackagesComponent', () => {
 
       // Expect a single request to a specific URL
       const req = backend.expectOne({
-        url: 'http://localhost:9000/packages?offset=2',
+        url: `${testURL}packages?offset=2`,
         method: 'POST',
       });
 
@@ -184,7 +185,7 @@ describe('PackagesComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: 'http://localhost:9000/packages?offset=',
+        url: `${testURL}packages?offset=`,
         method: 'POST',
       });
 
@@ -217,7 +218,7 @@ describe('PackagesComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: 'http://localhost:9000/packages?offset=',
+        url: `${testURL}packages?offset=`,
         method: 'POST',
       });
 

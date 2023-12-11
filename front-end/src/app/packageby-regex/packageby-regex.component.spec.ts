@@ -8,10 +8,10 @@ import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { PackagebyRegexComponent } from './packageby-regex.component';
 import { ApiService } from '../api/services';
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { of, throwError } from 'rxjs';
-import { PackageQuery, AuthenticationToken, EnumerateOffset, PackageMetadata, PackageHistoryEntry } from '../api/models';
+import { PackageMetadata } from '../api/models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { testURL } from '../test-config';
 
 describe('PackagebyRegexComponent', () => {
   let component: PackagebyRegexComponent;
@@ -59,7 +59,7 @@ describe('PackagebyRegexComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and parameters
       const req = httpTestingController.expectOne({
-        url: 'http://localhost:9000/package/byRegEx',
+        url: `${testURL}package/byRegEx`,
         method: 'POST',
       });
 
@@ -82,7 +82,7 @@ describe('PackagebyRegexComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and parameters
       const req = httpTestingController.expectOne({
-        url: 'http://localhost:9000/package/byRegEx',
+        url: `${testURL}package/byRegEx`,
         method: 'POST',
       });
 
@@ -106,7 +106,7 @@ describe('PackagebyRegexComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and parameters
       const req = httpTestingController.expectOne({
-        url: 'http://localhost:9000/package/byRegEx',
+        url: `${testURL}package/byRegEx`,
         method: 'POST',
       });
 
@@ -130,7 +130,7 @@ describe('PackagebyRegexComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and parameters
       const req = httpTestingController.expectOne({
-        url: 'http://localhost:9000/package/byRegEx',
+        url: `${testURL}package/byRegEx`,
         method: 'POST',
       });
 

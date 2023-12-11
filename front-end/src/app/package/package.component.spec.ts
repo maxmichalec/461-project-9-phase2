@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FilterOutContentFieldPipe } from '../filter-out-content.pipe';
 import { StrictHttpResponse } from '../api/strict-http-response';
+import { testURL } from '../test-config';
 
 describe('PackageComponent', () => {
   let component: PackageComponent;
@@ -71,7 +72,7 @@ describe('PackageComponent', () => {
       component.packageId = mockPackageId;
       component.getPackage();
 
-      const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}`);
+      const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}`);
       expect(req.request.method).toBe('GET');
       req.flush({ Content: mockZipContent }, { status: 200, statusText: 'OK' });
       expect(component.packageData).toEqual(mockResponse);
@@ -86,7 +87,6 @@ describe('PackageComponent', () => {
       
       // Arrange
       const mockPackageId = 'mock-valid-id';
-      const mockZipContent = 'mock-package-content';
       const mockPackage: Package = {
         data: { Content: 'mock-package-content', URL: '', JSProgram: '' }, 
         metadata: { Name: 'mock-package', Version: '1.0.0', ID: 'mock-valid-id' }};
@@ -98,7 +98,7 @@ describe('PackageComponent', () => {
         clone: null as any,
         headers: null as any,
         statusText: 'OK',
-        url: `localhost:9000/package/${mockPackageId}`,
+        url: `${testURL}package/${mockPackageId}`,
         ok: false
       };
 
@@ -131,7 +131,7 @@ describe('PackageComponent', () => {
       component.packageId = mockPackageId;
       component.getPackage();
 
-      const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}`);
+      const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}`);
       expect(req.request.method).toBe('GET');
       req.flush({ Content: mockZipContent }, { status: 404, statusText: 'Not Found' });
 
@@ -154,7 +154,7 @@ describe('PackageComponent', () => {
 
       component.getPackage();
 
-      const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}`);
+      const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}`);
       expect(req.request.method).toBe('GET');
       req.flush({ Content: mockZipContent }, { status: 400, statusText: 'Bad Request' });
 
@@ -179,7 +179,7 @@ describe('PackageComponent', () => {
       component.packageData = mockResponse;
       component.updatePackage();
 
-      const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}`);
+      const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}`);
       expect(req.request.method).toBe('PUT');
       req.flush({ Content: mockZipContent }, { status: 200, statusText: 'OK' });
       expect(component.packageData).toEqual(mockResponse);
@@ -235,7 +235,7 @@ describe('PackageComponent', () => {
         component.packageData = mockResponse;
         component.updatePackage();
   
-        const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}`);
+        const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}`);
         expect(req.request.method).toBe('PUT');
         req.flush({ Content: mockZipContent }, { status: 400, statusText: 'Bad Request' });
         expect(component.packageData).toEqual(mockResponse);
@@ -267,7 +267,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: 'http://localhost:9000/package/mock-valid-id',
+        url: `${testURL}package/mock-valid-id`,
         method: 'PUT',
       });
 
@@ -305,7 +305,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: 'http://localhost:9000/package/mock-valid-id',
+        url: `${testURL}package/mock-valid-id`,
         method: 'PUT',
       });
 
@@ -329,7 +329,7 @@ describe('PackageComponent', () => {
       component.packageData = mockResponse;
       component.updatePackage();
 
-      const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}`);
+      const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}`);
       expect(req.request.method).toBe('PUT');
       req.flush({ Content: mockZipContent }, { status: 400, statusText: 'Bad Request' });
       expect(component.packageData).toEqual(mockResponse);
@@ -365,7 +365,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: 'http://localhost:9000/package/mock-valid-id',
+        url: `${testURL}package/mock-valid-id`,
         method: 'PUT',
       });
 
@@ -389,7 +389,7 @@ describe('PackageComponent', () => {
       component.packageData = mockResponse;
       component.updatePackage();
 
-      const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}`);
+      const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}`);
       expect(req.request.method).toBe('PUT');
       req.flush({ Content: mockZipContent }, { status: 409, statusText: 'Bad Request' });
       expect(component.packageData).toEqual(mockResponse);
@@ -415,7 +415,7 @@ describe('PackageComponent', () => {
       component.packageData = mockResponse;
       component.deletePackage();
 
-      const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}`);
+      const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}`);
       expect(req.request.method).toBe('DELETE');
       req.flush({ Content: mockZipContent }, { status: 200, statusText: 'OK' });
       expect(component.packageData).toEqual(mockResponse);
@@ -482,7 +482,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: 'http://localhost:9000/package/mock-invalid-id',
+        url: `${testURL}package/mock-invalid-id`,
         method: 'DELETE',
       });
 
@@ -547,7 +547,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: 'http://localhost:9000/package/',
+        url: `${testURL}package/`,
         method: 'DELETE',
       });
 
@@ -613,7 +613,7 @@ describe('PackageComponent', () => {
       component.ratePackage();
 
       // Assert
-      const req = httpTestingController.expectOne(`http://localhost:9000/package/${mockPackageId}/rate`);
+      const req = httpTestingController.expectOne(`${testURL}package/${mockPackageId}/rate`);
       expect(req.request.method).toBe('GET');
       req.flush(mockRating, { status: 200, statusText: 'OK' });
       
@@ -682,7 +682,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: `http://localhost:9000/package/${mockPackageId}/rate`,
+        url: `${testURL}package/${mockPackageId}/rate`,
         method: 'GET',
       });
 
@@ -752,7 +752,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: `http://localhost:9000/package/${mockPackageId}/rate`,
+        url: `${testURL}package/${mockPackageId}/rate`,
         method: 'GET',
       });
 
@@ -822,7 +822,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: `http://localhost:9000/package/${mockPackageId}/rate`,
+        url: `${testURL}package/${mockPackageId}/rate`,
         method: 'GET',
       });
 
@@ -890,7 +890,7 @@ describe('PackageComponent', () => {
       component.putPackage();
 
       // Assert
-      const req = httpTestingController.expectOne(`http://localhost:9000/package`);
+      const req = httpTestingController.expectOne(`${testURL}package`);
       expect(req.request.method).toBe('POST');
       req.flush(mockResponse, { status: 200, statusText: 'OK' });
       
@@ -963,7 +963,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: `http://localhost:9000/package`,
+        url: `${testURL}package`,
         method: 'POST',
       });
 
@@ -1040,7 +1040,7 @@ describe('PackageComponent', () => {
 
       // Expect a single request to a specific URL with specific headers and body
       const req = backend.expectOne({
-        url: `http://localhost:9000/package`,
+        url: `${testURL}package`,
         method: 'POST',
       });
 

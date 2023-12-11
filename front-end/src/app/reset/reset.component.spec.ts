@@ -10,6 +10,7 @@ import { ResetComponent } from './reset.component';
 import { ApiService } from "../api/services";
 import { StrictHttpResponse } from '../api/strict-http-response';
 import { HttpResponse } from '@angular/common/http';
+import { testURL } from '../test-config';
 
 describe('ResetComponent', () => {
   let component: ResetComponent;
@@ -50,7 +51,7 @@ describe('ResetComponent', () => {
       clone: null as any,
       headers: null as any,
       statusText: 'OK',
-      url: 'localhost:9000/reset',
+      url: `${testURL}reset`,
       ok: true
     };
 
@@ -72,7 +73,7 @@ describe('ResetComponent', () => {
       clone: null as any,
       headers: null as any,
       statusText: 'Bad Request',
-      url: 'localhost:9000/reset',
+      url: `${testURL}reset`,
       ok: false
     };
 
@@ -125,7 +126,7 @@ describe('ResetComponent', () => {
       headers: null as any,
       status: 200,
       statusText: 'OK',
-      url: 'http://localhost:9000/reset',
+      url: `${testURL}reset`,
       ok: true,
       type: 4,
       body: null as any,
@@ -137,7 +138,7 @@ describe('ResetComponent', () => {
       expect(response.status).toEqual(expectedResponse.status);
     });
 
-    const req = httpTestingController.expectOne('http://localhost:9000/reset');
+    const req = httpTestingController.expectOne(`${testURL}reset`);
     req.flush(expectedResponse);
   });
 
@@ -146,7 +147,7 @@ describe('ResetComponent', () => {
     
     component.onSubmit();
 
-    const req = httpTestingController.expectOne('http://localhost:9000/reset');
+    const req = httpTestingController.expectOne(`${testURL}reset`);
     req.flush(null, { status: 400, statusText: 'Bad Request' });
     expect(component.resetMessage).toEqual('Error reseting application.');
     console.log('component.resetMessage: ', component.resetMessage);
@@ -157,7 +158,7 @@ describe('ResetComponent', () => {
     component.authHeader = '';
     component.onSubmit();
 
-    const req = httpTestingController.expectOne('http://localhost:9000/reset');
+    const req = httpTestingController.expectOne(`${testURL}reset`);
     req.flush(null, { status: 400, statusText: 'Unauthorized' });
     expect(component.resetMessage).toEqual('Error reseting application.');
     console.log('component.resetMessage for no auth: ', component.resetMessage);
@@ -167,7 +168,7 @@ describe('ResetComponent', () => {
     component.authHeader = 'X-Authorization';
     component.onSubmit();
 
-    const req = httpTestingController.expectOne('http://localhost:9000/reset');
+    const req = httpTestingController.expectOne(`${testURL}reset`);
     req.flush(null, { status: 200, statusText: 'OK' });
     expect(component.resetMessage).toEqual('Application reset successful.');
     console.log('component.resetMessage for correct auth: ', component.resetMessage);
