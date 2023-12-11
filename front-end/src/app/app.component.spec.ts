@@ -1,12 +1,41 @@
-import { TestBed } from '@angular/core/testing';
+/*
+ * File: app.component.spec.ts
+ * Author: Caroline Gilbert
+ * Description: Unit tests for the app endpoint for the front-end
+ */
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { HomeModule } from './home/home.module';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { ApiService } from "./api/services";
+
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    declarations: [AppComponent]
-  }));
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+  let apiService: ApiService;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+    imports: [RouterTestingModule, 
+      HttpClientTestingModule,
+      HomeModule],
+    declarations: [AppComponent],
+    providers: [{provide: ApiService}]
+  }).compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    apiService = TestBed.inject(ApiService);
+    httpTestingController = TestBed.inject(HttpTestingController);
+});
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
@@ -14,16 +43,11 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'front-end'`, () => {
+  it(`should have as title 'Package Registry'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('front-end');
+    const expectedTitle = 'Package Registry'
+    expect(app.title).toEqual(expectedTitle);
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('front-end app is running!');
-  });
 });

@@ -9,6 +9,10 @@ import { HomeComponent } from './home.component';
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { ApiService } from "../api/services";
 import { PackageModule } from '../package/package.module';
+import { PackagesModule } from '../packages/packages.module';
+import { PackagebyNameModule } from '../packageby-name/packageby-name.module';
+import { PackagebyRegexModule } from '../packageby-regex/packageby-regex.module';
+import { ResetModule } from '../reset/reset.module';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -19,7 +23,12 @@ describe('HomeComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent],
-      imports: [HttpClientTestingModule, PackageModule],
+      imports: [HttpClientTestingModule, 
+        PackageModule,
+        PackagesModule,
+        PackagebyNameModule,
+        PackagebyRegexModule,
+        ResetModule,],
       providers: [{provide: ApiService}]
     }).compileComponents();
     
