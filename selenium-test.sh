@@ -9,14 +9,12 @@ log_file="selenium-test.log"
 
 # Compile typescript
 echo "Compiling typescript..."
-cd front-end
-cd selenium 
-tsc --skipLibCheck
+tsc front-end/selenium/**/*.ts --skipLibCheck
 
 # Clear log file and run selenium-test
 echo "Running selenium-test..."
 > "$log_file"
-node selenium-test.js &
+node front-end/selenium/selenium-test.js &
 
 # Wait for processes to finish
 wait
