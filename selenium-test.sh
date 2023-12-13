@@ -9,12 +9,14 @@ log_file="selenium-test.log"
 
 # Compile typescript
 echo "Compiling typescript..."
-tsc
+cd front-end
+cd selenium 
+tsc --skipLibCheck
 
 # Clear log file and run selenium-test
 echo "Running selenium-test..."
 > "$log_file"
-node dist/front-end/selenium/selenium-test.js &
+node selenium-test.js &
 
 # Wait for processes to finish
 wait
@@ -27,4 +29,6 @@ if grep -q "ERROR" "$log_file"; then
     exit 1
 else
     echo "SUCCESS: selenium-test passed."
+    code "$log_file"
+    exit 0
 fi
