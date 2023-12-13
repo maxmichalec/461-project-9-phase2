@@ -510,25 +510,23 @@ export async function createPackage(req: Request, res: Response) {
           return res.status(400).json({ error: 'Invalid package creation request: package.json must contain repository url, package name, and version' });
         }
       }
+      
+      // Check metric scores
+      info = await metricCalcFromUrl(packageJsonContent.repository.url);
+      if (info == null) {
+        log_response(400, "{ error: 'Invalid package creation request: Could not get GitHub url' }");
+        return res.status(400).json({ error: 'Invalid package creation request: Could not get GitHub url' });
+      } else if (info.NET_SCORE < 0.5 || info.BUS_FACTOR_SCORE < 0.5 || info.CORRECTNESS_SCORE < 0.5 || info.LICENSE_SCORE < 0.5 || info.PINNED_DEPENDENCIES_SCORE < 0.5 || info.PULL_REQUESTS_SCORE < 0.5 || info.RAMP_UP_SCORE < 0.5 || info.RESPONSIVE_MAINTAINER_SCORE < 0.5) {
+        log_response(424, "{ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' }");
+        return res.status(424).json({ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' });
+      }
 
       // If valid, generate package ID from name and version
       id = generatePackageId(packageJsonContent.name, packageJsonContent.version);
-      // Update package info (no need to rate uploaded package at this point)
-      info = {
-        ID: id,
-        NAME: packageJsonContent.name,
-        OWNER: "",
-        VERSION: packageJsonContent.version,
-        URL: packageJsonContent?.repository?.url,
-        NET_SCORE: 0,
-        RAMP_UP_SCORE: 0,
-        CORRECTNESS_SCORE: 0,
-        BUS_FACTOR_SCORE: 0,
-        RESPONSIVE_MAINTAINER_SCORE: 0,
-        LICENSE_SCORE: 0,
-        PULL_REQUESTS_SCORE: 0,
-        PINNED_DEPENDENCIES_SCORE: 0,
-      };
+      // Update package info
+      info.ID = id;
+      info.NAME = packageJsonContent.name;
+      info.VERSION = packageJsonContent.version;
 
       // Upload package content to S3 bucket and make reference in database
       const s3params = {
@@ -559,6 +557,25 @@ export async function createPackage(req: Request, res: Response) {
         log_response(424, "{ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' }");
         return res.status(424).json({ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' });
       }
+      // Get package name and version from package.json
+      const packageJSONresponse = await fetch(`https://api.github.com/repos/${info.OWNER}/${info.NAME}/contents/package.json`, {
+        headers: {
+          Authorization: process.env.GITHUB_TOKEN || "",
+          Accept: 'application/vnd.github.v3+json',
+        },
+      });
+      if (!packageJSONresponse.ok) {
+        log_response(400, "{ error: 'Invalid package creation request: Could not get package.json from repository' }");
+        return res.status(400).json({ error: 'Invalid package creation request: Could not get package.json from repository' });
+      }
+      const fileBuffer = await packageJSONresponse.json();
+      const content = Buffer.from(fileBuffer.content, 'base64').toString('utf-8');
+      info.VERSION = JSON.parse(content).version;
+      if (!info.VERSION) {
+        log_response(400, "{ error: 'Invalid package creation request: Could not get version from package.json' }");
+        return res.status(400).json({ error: 'Invalid package creation request: Could not get version from package.json' });
+      }
+
       // If valid, generate package ID from name and version
       id = generatePackageId(info.NAME, info.VERSION);
       info.ID = id;
