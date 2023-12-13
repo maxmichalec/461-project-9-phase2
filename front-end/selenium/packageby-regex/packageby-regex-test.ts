@@ -1,5 +1,6 @@
 import { By, WebDriver, until } from 'selenium-webdriver';
 import { logToFile } from '../setup';
+import { baseUrl } from '../config';
 
 // Function to test fetching a package
 export async function packageByRegexTest(driver: WebDriver): Promise<void> {
@@ -7,7 +8,7 @@ export async function packageByRegexTest(driver: WebDriver): Promise<void> {
       // Log that the test is starting
       logToFile('Starting packageByRegexTest...');
   
-      await driver.get('http://localhost:4200/home');
+      await driver.get(baseUrl);
   
       // Locate the input fields and enter package name and version
       const packageRegexInput = await driver.findElement(By.id('regexInput'));

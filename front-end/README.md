@@ -2,13 +2,9 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.8.
 
-## Development server
+## Install Dependencies
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Run `npm install` to install the necessary dependencies for the angular application.
 
 ## Build
 
@@ -16,12 +12,20 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). To run the unit tests on a headless browser and exit the testing framework after the tests are complete run `ng test --browser=ChromeHeadless --watch=false`.
 
-## Running end-to-end tests
+## Running selenium tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+The selenium tests are currently configured to run only on a localhost and not the application's AWS URL. The selenium tests should be ran from the repository's source directory `461-project-9-phase2`. 
 
-## Further help
+Install the dependencies and build the application by running `npm install && npm run build`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+To setup the back end on localhost port 9000 run `node dist/src/app.js`.
+
+To setup the front end on localhost port 4200, navigate to the front-end directory `cd front-end`, install and build the angular application with `npm install && ng build`, and server the application with `ng serve`.
+
+Once both the front end and back end servers are running on localhost, navigate back to the source directory `461-project-9-phase2` via `cd ..`.
+
+
+
+Run the selenium test suite by running the following commands: `chmod +x selenium-test.sh` followed by `./selenium-test.sh`. The selenium webdriver will open a browser in Chrome to run the test suite and will produce the test report in the `selenium-test.log` file.

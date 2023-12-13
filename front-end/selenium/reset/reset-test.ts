@@ -1,5 +1,6 @@
 import { By, WebDriver, until } from 'selenium-webdriver';
 import { logToFile } from '../setup';
+import { baseUrl } from '../config';
 
 // Function to test the Reset button
 export async function resetTest(driver: WebDriver): Promise<void> {
@@ -7,7 +8,7 @@ export async function resetTest(driver: WebDriver): Promise<void> {
     // Log that the test is starting
     logToFile('Starting resetTest...');
 
-    await driver.get('http://localhost:4200/home');
+    await driver.get(baseUrl);
 
     // Wait for the reset button to be present (timeout is 5 seconds)
     const resetButton = await driver.wait(until.elementLocated(By.css('.reset-container button')), 5000);
