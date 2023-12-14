@@ -52,10 +52,10 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
     // Convert DynamoDB items to PackageMetadata
     const packageHistory: PackageMetadata[] = (scanResult.Items || []).map((item) => {
       const unmarshalledItem = unmarshall(item);
-      const valueObject = unmarshalledItem.value || {};
+      //const valueObject = unmarshalledItem.value || {};
 
       return {
-        ID: valueObject.ID, 
+        ID: unmarshalledItem?.id.toString() || "", 
         Name: unmarshalledItem.name,
         Version: unmarshalledItem.version,
       };
