@@ -70,7 +70,7 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
     }
 
     const regexObject = new RegExp(requestBody.RegEx);
-    const MAX_EXECUTION_TIME = 1000;
+    const MAX_EXECUTION_TIME = 10000;
     
     async function testRegexWithTimeout(input: string): Promise<boolean> {
       return Promise.race([
@@ -100,8 +100,8 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
     
     if (timeoutOccurred) {
       console.error('Regex test exceeded the maximum execution time');
-      log_response(500, "{ error: 'Regex test exceeded the maximum execution time' }");
-      return res.status(500).json({ error: 'Regex test exceeded the maximum execution time' });
+      log_response(400, "{ error: 'Regex test exceeded the maximum execution time' }");
+      return res.status(400).json({ error: 'Regex test exceeded the maximum execution time' });
     }
     
     console.log('Packages after regex filtering:', regexFilteredPackages);
