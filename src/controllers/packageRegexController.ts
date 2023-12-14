@@ -64,52 +64,13 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
     console.log('Converted DynamoDB items:', packageHistory);
 
     if (packageHistory.length === 0) {
-      console.warn('No packages found under this regex');
+      //console.warn('No packages found under this regex');
       log_response(404, "{ error: 'No package found under this regex' }");
       return res.status(404).json({ error: 'No package found under this regex' });
     }
 
-    const regexObject = new RegExp(requestBody.RegEx);
-    const MAX_EXECUTION_TIME = 10000;
-    
-    async function testRegexWithTimeout(input: string): Promise<{ result: boolean, timeout: boolean }> {
-      return Promise.race([
-        new Promise<{ result: boolean, timeout: boolean }>((resolve) => {
-          const timeoutId = setTimeout(() => {
-            resolve({ result: false, timeout: true }); // Resolve with timeout true when timeout occurs
-          }, MAX_EXECUTION_TIME);
-    
-          // Regular expression test
-          regexObject.test(input) && resolve({ result: true, timeout: false });
-    
-          // Clear the timeout (this won't affect the resolved promise)
-          clearTimeout(timeoutId);
-        }),
-      ]);
-    }    
-    
     // Perform additional regex filtering on the client side
-    let timeoutOccurred: boolean = false;
-    const regexFilteredPackages: PackageMetadata[] = [];
-    
-    for (const pkg of packageHistory) {
-      const {result, timeout } = await testRegexWithTimeout(pkg.Name);
-    
-      if (!result && timeout) {
-        timeoutOccurred = true;
-        break; // Exit the loop if timeout occurs
-      }
-    
-      if (result && !timeout) {
-        regexFilteredPackages.push(pkg);
-      }
-    }
-    
-    if (timeoutOccurred) {
-      console.error('Regex test exceeded the maximum execution time');
-      log_response(404, "{ error: 'Regex test exceeded the maximum execution time' }");
-      return res.status(404).json({ error: 'Regex test exceeded the maximum execution time' });
-    }
+    const regexFilteredPackages = packageHistory.filter((pkg) => new RegExp(requestBody.RegEx).test(pkg.Name));
     
     console.log('Packages after regex filtering:', regexFilteredPackages);
 
