@@ -54,8 +54,7 @@ export async function getPackageById (req: Request, res: Response) {
               "ID": packageId
             },
             data: {
-              "JSProgram": "",
-              "URL": response.Item?.repoURL?.S || undefined,
+              //"URL": response.Item?.repoURL?.S || undefined,
               "Content": ""
             }
           }
