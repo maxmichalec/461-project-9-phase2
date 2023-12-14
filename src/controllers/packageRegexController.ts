@@ -80,15 +80,13 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
           }, MAX_EXECUTION_TIME);
     
           // Regular expression test
-          const regexResult = regexObject.test(input);
+          regexObject.test(input) && resolve({ result: true, timeout: false });
     
-          // Clear the timeout
+          // Clear the timeout (this won't affect the resolved promise)
           clearTimeout(timeoutId);
-    
-          // Resolve with both regular expression result and timeout status
-          resolve({ result: regexResult, timeout: false });
+        }),
       ]);
-    }
+    }    
     
     // Perform additional regex filtering on the client side
     let timeoutOccurred: boolean = false;
