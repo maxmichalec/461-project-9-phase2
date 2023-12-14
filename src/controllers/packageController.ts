@@ -513,10 +513,11 @@ export async function createPackage(req: Request, res: Response) {
       
       // Check metric scores
       info = await metricCalcFromUrl(packageJsonContent.repository.url);
+      log.info("upload package info:", info);
       if (info == null) {
         log_response(400, "{ error: 'Invalid package creation request: Could not get GitHub url' }");
         return res.status(400).json({ error: 'Invalid package creation request: Could not get GitHub url' });
-      } else if (info.NET_SCORE < 0.25 || info.BUS_FACTOR_SCORE < 0.25 || info.CORRECTNESS_SCORE < 0.25 || info.LICENSE_SCORE < 0.25 || info.PINNED_DEPENDENCIES_SCORE < 0.25 || info.PULL_REQUESTS_SCORE < 0.25 || info.RAMP_UP_SCORE < 0.25 || info.RESPONSIVE_MAINTAINER_SCORE < 0.25) {
+      } else if (info.NET_SCORE < 0.1 || info.BUS_FACTOR_SCORE < 0.1 || info.CORRECTNESS_SCORE < 0.1 || info.LICENSE_SCORE < 0.1 || info.PINNED_DEPENDENCIES_SCORE < 0.1 || info.PULL_REQUESTS_SCORE < 0.1 || info.RAMP_UP_SCORE < 0.1 || info.RESPONSIVE_MAINTAINER_SCORE < 0.1) {
         log_response(424, "{ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' }");
         return res.status(424).json({ error: 'Invalid package creation request: Package can not be uploaded due to disqualifying rating.' });
       }
