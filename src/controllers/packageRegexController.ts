@@ -72,36 +72,45 @@ export const postPackageByRegEx = async (req: Request, res: Response) => {
     const regexObject = new RegExp(requestBody.RegEx);
     const MAX_EXECUTION_TIME = 10000;
     
-    async function testRegexWithTimeout(input: string): Promise<boolean> {
+    async function testRegexWithTimeout(input: string): Promise<{ result: boolean, timeout: boolean }> {
       return Promise.race([
-        regexObject.test(input), // Regular expression test
-        new Promise<boolean>((resolve) =>
-          setTimeout(() => resolve(false), MAX_EXECUTION_TIME)
-        ), // Timeout promise
+        new Promise<{ result: boolean, timeout: boolean }>((resolve) => {
+          const timeoutId = setTimeout(() => {
+            resolve({ result: false, timeout: true }); // Resolve with timeout true when timeout occurs
+          }, MAX_EXECUTION_TIME);
+    
+          // Regular expression test
+          const regexResult = regexObject.test(input);
+    
+          // Clear the timeout
+          clearTimeout(timeoutId);
+    
+          // Resolve with both regular expression result and timeout status
+          resolve({ result: regexResult, timeout: false });
       ]);
     }
     
     // Perform additional regex filtering on the client side
-    let timeoutOccurred = false;
+    let timeoutOccurred: boolean = false;
     const regexFilteredPackages: PackageMetadata[] = [];
     
     for (const pkg of packageHistory) {
-      const result = await testRegexWithTimeout(pkg.Name);
+      const {result, timeout } = await testRegexWithTimeout(pkg.Name);
     
-      if (!result) {
+      if (!result && timeout) {
         timeoutOccurred = true;
         break; // Exit the loop if timeout occurs
       }
     
-      if (result) {
+      if (result && !timeout) {
         regexFilteredPackages.push(pkg);
       }
     }
     
     if (timeoutOccurred) {
       console.error('Regex test exceeded the maximum execution time');
-      log_response(400, "{ error: 'Regex test exceeded the maximum execution time' }");
-      return res.status(400).json({ error: 'Regex test exceeded the maximum execution time' });
+      log_response(404, "{ error: 'Regex test exceeded the maximum execution time' }");
+      return res.status(404).json({ error: 'Regex test exceeded the maximum execution time' });
     }
     
     console.log('Packages after regex filtering:', regexFilteredPackages);
