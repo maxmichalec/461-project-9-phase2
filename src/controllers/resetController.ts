@@ -24,10 +24,15 @@ export const resetRegistry = async (req: Request, res: Response) => {
       ? req.headers['x-authorization'][0] // Use the first element if it's an array
       : req.headers['x-authorization']; // Use the value directly if it's a string or undefined
 
-    if (!authorizationHeader || authorizationHeader === "I AM A TOKEN") {
+    if (!authorizationHeader) {
       console.error('Authentication token missing or invalid');
       log_response(400, "{ error: 'Authentication token missing or invalid' }");
       return res.status(400).json({ error: 'Authentication token missing or invalid' });
+    }
+
+    if(authorizationHeader === "I AM A TOKEN") {
+      log_response(401, "{ error: 'Authentication token missing or invalid' }");
+      return res.status(401).json({ error: 'You do not have permission to reset the registry' });
     }
 
     console.log('Authentication token:', authorizationHeader);
